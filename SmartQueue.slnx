@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SmartQueue.Api/SmartQueue.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SmartQueue.Api.Tests/SmartQueue.Api.Tests.csproj" />
+  </Folder>
+</Solution>

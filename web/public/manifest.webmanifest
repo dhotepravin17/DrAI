@@ -1,0 +1,12 @@
+{
+  "name": "Smart Doctor Queue",
+  "short_name": "DoctorQueue",
+  "description": "Find your doctor, join the clinic queue, and get alerted when your turn is near.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f8f8",
+  "theme_color": "#0f766e",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
