@@ -105,15 +105,46 @@ public static class AuthEndpoints
         var user = await db.Users.Include(u => u.RoleAssignments).FirstOrDefaultAsync(u => u.Id == userId && u.IsActive, ct);
         if (user?.TotpSecretProtected is null) return Results.Problem(statusCode: StatusCodes.Status401Unauthorized, title: "Sign-in has expired.");
 
+        var now = clock.GetUtcNow();
+        if (user.TotpLockedUntil > now) return MfaLocked(user.TotpLockedUntil.Value, now);
+
         var secret = protection.CreateProtector(TotpProtectorPurpose).Unprotect(user.TotpSecretProtected);
-        var step = Totp.Verify(secret, request.Code, clock.GetUtcNow(), user.TotpLastUsedStep);
-        if (step is null) return Results.Problem(statusCode: StatusCodes.Status400BadRequest, title: "The authenticator code is incorrect.");
+        var step = Totp.Verify(secret, request.Code, now, user.TotpLastUsedStep);
+        if (step is null)
+        {
+            // Counted atomically so parallel guesses with the same or different MFA tickets all count toward the limit.
+            var failures = (await db.Database.SqlQuery<int>(
+                    $"UPDATE [Users] SET [TotpFailedAttempts] = [TotpFailedAttempts] + 1 OUTPUT inserted.[TotpFailedAttempts] AS [Value] WHERE [Id] = {user.Id}")
+                .ToListAsync(ct)).Single();
+            if (failures < MaxTotpFailures)
+                return Results.Problem(statusCode: StatusCodes.Status400BadRequest, title: "The authenticator code is incorrect.");
+
+            var lockedUntil = now.Add(TotpLockout);
+            await db.Users.Where(u => u.Id == user.Id).ExecuteUpdateAsync(s => s
+                .SetProperty(u => u.TotpFailedAttempts, 0)
+                .SetProperty(u => u.TotpLockedUntil, lockedUntil), ct);
+            audit.Record("AdminMfaLocked", "User", user.Id.ToString(), details: $"{failures} incorrect authenticator codes", actorUserId: user.Id);
+            await db.SaveChangesAsync(ct);
+            return MfaLocked(lockedUntil, now);
+        }
 
         user.TotpLastUsedStep = step;
-        user.TotpEnabledAt ??= clock.GetUtcNow();
+        user.TotpFailedAttempts = 0;
+        user.TotpLockedUntil = null;
+        user.TotpEnabledAt ??= now;
         audit.Record("AdminSignIn", "User", user.Id.ToString(), actorUserId: user.Id);
         await db.SaveChangesAsync(ct);
         return Results.Ok(Issue(tokens, user));
+    }
+
+    public const int MaxTotpFailures = 5;
+    public static readonly TimeSpan TotpLockout = TimeSpan.FromMinutes(15);
+
+    private static IResult MfaLocked(DateTimeOffset until, DateTimeOffset now)
+    {
+        var minutes = Math.Max(1, (int)Math.Ceiling((until - now).TotalMinutes));
+        return Results.Problem(statusCode: StatusCodes.Status429TooManyRequests, title: "Too many incorrect authenticator codes.",
+            detail: $"Sign-in is locked. Try again in {minutes} minute{(minutes == 1 ? "" : "s")}.");
     }
 
     private static async Task<IResult> CreateAccount(

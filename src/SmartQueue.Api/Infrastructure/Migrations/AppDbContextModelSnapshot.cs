@@ -1370,8 +1370,14 @@ namespace SmartQueue.Api.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("TotpEnabledAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("TotpFailedAttempts")
+                        .HasColumnType("int");
+
                     b.Property<long?>("TotpLastUsedStep")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("TotpLockedUntil")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("TotpSecretProtected")
                         .HasMaxLength(500)

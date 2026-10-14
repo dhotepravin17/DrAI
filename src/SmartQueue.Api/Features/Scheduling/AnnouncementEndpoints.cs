@@ -70,12 +70,15 @@ public static class AnnouncementEndpoints
             CreatedByUserId = actor.UserId,
             CreatedAt = now,
         };
+        var startDate = ClinicTime.DateOf(announcement.StartsAt);
+        var endDate = ClinicTime.DateOf(announcement.EndsAt ?? announcement.StartsAt);
+        if (announcement.ClosesClinic)
+            await schedule.EnsureCanCloseAsync(actor.Doctor.Id, actor.ClinicId, startDate, endDate, null, ct);
+
         db.Announcements.Add(announcement);
         audit.Record("PublishAnnouncement", "Doctor", actor.Doctor.Id.ToString(), details: $"{announcement.Type}: {announcement.Message}");
         await db.SaveChangesAsync(ct);
 
-        var startDate = ClinicTime.DateOf(announcement.StartsAt);
-        var endDate = ClinicTime.DateOf(announcement.EndsAt ?? announcement.StartsAt);
         var windowEnd = announcement.EndsAt ?? ClinicTime.At(endDate, TimeOnly.MaxValue);
 
         if (announcement.ClosesClinic)
@@ -113,8 +116,8 @@ public static class AnnouncementEndpoints
     }
 
     private static async Task<IResult> Remove(
-        Guid id, Guid? doctorId, HttpContext http, ClinicAccess access, AppDbContext db, ScheduleService schedule, AuditLogger audit,
-        TimeProvider clock, CancellationToken ct)
+        Guid id, Guid? doctorId, HttpContext http, ClinicAccess access, AppDbContext db, ScheduleService schedule, QueueEngine engine,
+        AuditLogger audit, TimeProvider clock, CancellationToken ct)
     {
         var actor = await access.ResolveAsync(http.User, doctorId, ct);
         var announcement = await db.Announcements.FirstOrDefaultAsync(a => a.Id == id && a.DoctorId == actor.Doctor.Id && a.RemovedAt == null, ct);
@@ -123,15 +126,51 @@ public static class AnnouncementEndpoints
         announcement.RemovedAt = clock.GetUtcNow();
         var linked = await db.ScheduleExceptions.Where(e => e.AnnouncementId == id && e.RemovedAt == null).ToListAsync(ct);
         await schedule.RemoveExceptionsAsync(linked, ct);
-        if (announcement.Type == AnnouncementType.DelayedOpening)
-        {
-            var sessions = await db.QueueSessions.Where(s => s.DoctorId == actor.Doctor.Id && s.DelayMinutes > 0 &&
-                                                             s.EndsAt > announcement.StartsAt && !(s.State == SessionState.Closed || s.State == SessionState.Cancelled))
-                .ToListAsync(ct);
-            foreach (var s in sessions) s.DelayMinutes = 0;
-        }
         audit.Record("RemoveAnnouncement", "Doctor", actor.Doctor.Id.ToString(), details: id.ToString());
         await db.SaveChangesAsync(ct);
+
+        if (announcement.Type == AnnouncementType.DelayedOpening)
+            await RecalculateDelaysAsync(announcement, actor.UserId, db, schedule, engine, ct);
         return Results.NoContent();
+    }
+
+    /// <summary>
+    /// After a delay notice is removed, each session it covered gets the largest delay among the notices still active for
+    /// it (0 when none). Changes go through the queue engine so they are serialized with queue actions and pushed live.
+    /// </summary>
+    private static async Task RecalculateDelaysAsync(
+        Announcement removed, Guid actorUserId, AppDbContext db, ScheduleService schedule, QueueEngine engine, CancellationToken ct)
+    {
+        var (start, end, windowEnd) = Window(removed);
+        var sessions = (await schedule.AffectedSessionsAsync(removed.DoctorId, removed.ClinicId, start, end, null, ct))
+            .Where(s => s.DelayMinutes > 0 && s.EndsAt > removed.StartsAt && s.StartsAt < windowEnd).ToList();
+        if (sessions.Count == 0) return;
+
+        var others = (await db.Announcements.AsNoTracking()
+                .Where(a => a.DoctorId == removed.DoctorId && a.ClinicId == removed.ClinicId && a.RemovedAt == null &&
+                            a.Type == AnnouncementType.DelayedOpening && a.Id != removed.Id)
+                .ToListAsync(ct))
+            .Select(a => (Announcement: a, Window: Window(a))).ToList();
+
+        foreach (var session in sessions)
+        {
+            var remaining = others
+                .Where(o => session.EndsAt > o.Announcement.StartsAt && session.StartsAt < o.Window.WindowEnd)
+                .Select(o => o.Announcement.DelayMinutes ?? 0)
+                .DefaultIfEmpty(0).Max();
+            if (remaining == session.DelayMinutes) continue;
+            await engine.RunAsync(session.Id, actorUserId, scope =>
+            {
+                if (!scope.Session.IsFinished) scope.Session.DelayMinutes = remaining;
+                return Task.FromResult(true);
+            }, ct);
+        }
+    }
+
+    private static (DateOnly Start, DateOnly End, DateTimeOffset WindowEnd) Window(Announcement a)
+    {
+        var start = ClinicTime.DateOf(a.StartsAt);
+        var end = ClinicTime.DateOf(a.EndsAt ?? a.StartsAt);
+        return (start, end, a.EndsAt ?? ClinicTime.At(end, TimeOnly.MaxValue));
     }
 }
