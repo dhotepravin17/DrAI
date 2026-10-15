@@ -79,9 +79,9 @@ export function QueuePage() {
 
   return (
     <section className="stack">
-      <title>Queue · Smart Doctor Queue</title>
+      <title>Appointments · Smart Doctor Queue</title>
       <div className="page-head">
-        <h1>Queue</h1>
+        <h1>Appointments</h1>
         <div className="inline-field">
           <button type="button" className="button small" onClick={() => setDate(addDays(date, -1))} aria-label="Previous day">‹</button>
           <input type="date" aria-label="Date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} />
@@ -130,11 +130,11 @@ export function QueuePage() {
               {(v.session.state === 'Scheduled' || v.session.state === 'Paused') && (
                 <button type="button" className="button" disabled={busy}
                   onClick={() => void run(`/clinic/sessions/${sessionId}/${v.session.state === 'Paused' ? 'resume' : 'open'}`)}>
-                  {v.session.state === 'Paused' ? 'Resume queue' : 'Open queue'}
+                  {v.session.state === 'Paused' ? 'Resume appointments' : 'Start appointments'}
                 </button>
               )}
               {v.session.state === 'Open' && (
-                <button type="button" className="button" disabled={busy} onClick={() => void run(`/clinic/sessions/${sessionId}/pause`)}>Pause queue</button>
+                <button type="button" className="button" disabled={busy} onClick={() => void run(`/clinic/sessions/${sessionId}/pause`)}>Pause appointments</button>
               )}
               {!finished && <button type="button" className="button" disabled={busy} onClick={() => setDialog({ kind: 'walk-in' })}>+ Add walk-in</button>}
               {!finished && <button type="button" className="button danger" disabled={busy} onClick={() => setDialog({ kind: 'close' })}>Close session</button>}
@@ -174,7 +174,7 @@ export function QueuePage() {
 
             <div className="panel">
               <h2>Waiting ({v.waiting.length})</h2>
-              {v.waiting.length === 0 ? <p className="hint">The queue is empty.</p> : (
+              {v.waiting.length === 0 ? <p className="hint">No patients are waiting.</p> : (
                 <ol className="queue-list">
                   {v.waiting.map((e) => (
                     <li key={e.appointmentId} className={e.priority === 'Emergency' ? 'emergency' : ''}>
@@ -208,10 +208,10 @@ export function QueuePage() {
                   <li key={e.appointmentId}>
                     <span className="token-chip">{e.token}</span>
                     <span className="queue-person"><Name entry={e} />
-                      <span className="hint">Back in the queue after {e.requeueAfterCompletions} more consultation{e.requeueAfterCompletions === 1 ? '' : 's'}</span>
+                      <span className="hint">Back in the appointment list after {e.requeueAfterCompletions} more consultation{e.requeueAfterCompletions === 1 ? '' : 's'}</span>
                     </span>
                     <span className="actions">
-                      <button type="button" className="button small" disabled={busy} onClick={() => void run(`/clinic/appointments/${e.appointmentId}/requeue`)}>Patient is here — requeue now</button>
+                      <button type="button" className="button small" disabled={busy} onClick={() => void run(`/clinic/appointments/${e.appointmentId}/requeue`)}>Patient is here — add back now</button>
                       <button type="button" className="button small" disabled={busy} onClick={() => setDialog({ kind: 'cancel', entry: e })}>Cancel</button>
                     </span>
                   </li>
@@ -299,7 +299,7 @@ export function QueuePage() {
       )}
 
       {dialog?.kind === 'walk-in' && sessionId && (
-        <ModalForm title="Add a walk-in" submitLabel="Add to queue" onClose={() => setDialog(null)}
+        <ModalForm title="Add a walk-in" submitLabel="Add appointment" onClose={() => setDialog(null)}
           onSubmit={async (data) => {
             const existing = String(data.get('patientId') ?? '')
             const emergency = data.get('emergency') === 'on'

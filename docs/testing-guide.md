@@ -18,9 +18,9 @@
 1. Sign in with mobile number **9000000001** and the code shown on screen.
 2. In development there is no authenticator step. (Production asks for an authenticator app code after the phone code;
    see `Auth__AdminMfaRequired` in the README.)
-3. You land on the **Admin overview**. Check that the menu shows: **Overview, Doctors, Patients, Queues, Failures, Analytics, Audit, Cities**.
+3. You land on the **Admin overview**. Check that the menu shows: **Overview, Doctors, Patients, Appointments, Failures, Analytics, Audit, Cities**.
 
-Where each role lands after signing in: Super Admin → Admin overview; verified doctor or receptionist → Clinic queue;
+Where each role lands after signing in: Super Admin → Admin overview; verified doctor or receptionist → Clinic appointments;
 doctor waiting for verification → registration status; patient → Appointments. If you were sent to sign in from a
 protected page, you go back to that page instead.
 
@@ -40,12 +40,12 @@ protected page, you go back to that page instead.
 5. Go to **Window A**: Admin → **Doctors**. The new doctor is waiting for verification.
    - Open the doctor and click **Verify**.
    - Note the Doctor ID that is issued, for example `NGP-Dr-0001`.
-6. Back in **Window B**, sign out and sign in again with 9876500001. You now land on the **Clinic** queue.
+6. Back in **Window B**, sign out and sign in again with 9876500001. You now land on **Clinic → Appointments**.
    - The doctor's menu shows only doctor items: **Clinic** (or **Registration** before verification), **Alerts** and
      **Sign out**. Patient pages such as Appointments, Family or Account send the doctor back to the clinic.
    - A patient's menu (section 3) has no "Register as a doctor" link.
-7. The Queue page shows **Finish setting up your clinic**. Until hours are set, patients see "This doctor has not
-   published clinic hours yet" on the doctor's profile and cannot join the queue.
+7. The Appointments page shows **Finish setting up your clinic**. Until hours are set, patients see "This doctor has not
+   published clinic hours yet" on the doctor's profile and cannot book appointments.
 8. Click **Set your weekly clinic hours** (or the **Schedule** tab):
    - Click **Add session**, choose today's weekday, for example 08:00–14:00, capacity 20. Use **Copy Monday to Tue–Sat**
      to repeat a day.
@@ -63,27 +63,27 @@ protected page, you go back to that page instead.
    Enter **9876500002**, the code, and your name. You land on **Appointments**.
 2. Go to **Family** and add a child (enter a date of birth and confirm you are the guardian).
 3. **Find a doctor** lists all doctors straight away. Narrow it with a name, Doctor ID, city or specialty, or leave
-   "All cities" / "All specialties" to see everyone. Open the profile and click **Join queue**.
+   "All cities" / "All specialties" to see everyone. Open the profile and click **Book appointment**.
    - Choose today's **Morning** session.
    - Choose who the appointment is for: yourself or the child.
 4. Open **Appointments**. You should see:
    - The token, for example `T-001`
-   - Your position in the queue
+   - Your position in the line (patients ahead of you)
    - The estimated waiting time
 
 ---
 
-## 4. Running the queue (Window B, with Window C open beside it)
+## 4. Running appointments (Window B, with Window C open beside it)
 
-1. Go to Clinic → **Queue**.
+1. Go to Clinic → **Appointments**.
 2. Add 3 walk-ins: `Walk A`, `Walk B`, `Walk C`.
 3. Click **Call next**.
    - In Window C, the patient gets a "Your turn is near" or "It's your turn" alert.
-   - Their queue position updates live, without refreshing.
+   - Their position updates live, without refreshing.
 4. Click **Complete**, then call the next patient.
-5. **Emergency:** mark a waiting patient as an emergency and choose a reason. They move to the front of the queue.
+5. **Emergency:** mark a waiting patient as an emergency and choose a reason. They move to the front of the list.
 6. **Missed turn:** call a patient, wait out the 3-minute grace period, then mark them **Missed**.
-   - After 5 more patients are completed (or as soon as nobody else is waiting) they are put back in the queue.
+   - After 5 more patients are completed (or as soon as nobody else is waiting) they are put back in the appointment list.
 
 ---
 
@@ -92,7 +92,7 @@ protected page, you go back to that page instead.
 1. In Window B, go to Clinic → **Staff** and invite mobile **9876500003**.
 2. Open a fresh window, sign in as **9876500003**, go to **Account** and accept the invitation.
 3. Check that the receptionist:
-   - **can** run the Queue
+   - **can** run Appointments
    - **cannot** save changes to the Schedule (it is refused)
    - has **no** Staff tab
 4. On the Free plan, inviting a **second** staff member is refused.
@@ -112,7 +112,7 @@ protected page, you go back to that page instead.
 
 - **Closing while a patient is being seen**
   - With a patient called or in consultation, post a **Clinic closure** notice on the **Notices & leave** tab.
-  - Expected: refused with the patient's token; the queue stays open.
+  - Expected: refused with the patient's token; appointments stay open.
 
 - **Removing one delay keeps the others**
   - Post two **Delayed opening** notices for today: 30 minutes and 45 minutes.
@@ -137,7 +137,7 @@ protected page, you go back to that page instead.
 
 - **Analytics:** bookings, share booked online, wait and consultation times.
 - **Patients:** search for a patient and open their history. You must enter a reason, and the access then appears under **Audit**.
-- **Queues:** today's live queues.
+- **Appointments:** today's live appointment sessions.
 - **Failures:** notifications that could not be delivered.
 
 ---

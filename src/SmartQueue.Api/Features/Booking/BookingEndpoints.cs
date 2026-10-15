@@ -62,9 +62,9 @@ public static class BookingEndpoints
             string? reason = null;
             if (plan.Closed || session?.State == SessionState.Cancelled) reason = plan.ClosedReason ?? "Clinic closed";
             else if (session?.State == SessionState.Closed) reason = "Session finished";
-            else if (session?.State == SessionState.Paused) reason = "Queue paused";
+            else if (session?.State == SessionState.Paused) reason = "Appointments paused";
             else if (now >= plan.EndsAt) reason = "Session ended";
-            else if (booked >= plan.Capacity) reason = "Queue full";
+            else if (booked >= plan.Capacity) reason = "Fully booked";
 
             var served = mine.FirstOrDefault(a => a.Status is AppointmentStatus.Called or AppointmentStatus.InConsultation);
             var isToday = plan.Date == today && session is not null;

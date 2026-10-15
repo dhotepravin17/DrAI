@@ -13,7 +13,7 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
     <ul className="notice-list" aria-label="Clinic notices">
       {notices.map((n) => (
         <li key={`${n.type}-${n.startsAt}-${n.message}`} className="alert alert-warning">
-          <strong>{announcementLabels[n.type as AnnouncementType] ?? (n.type === 'QueuePaused' ? 'Queue paused' : n.type)}:</strong>{' '}
+          <strong>{announcementLabels[n.type as AnnouncementType] ?? (n.type === 'QueuePaused' ? 'Appointments paused' : n.type)}:</strong>{' '}
           {n.message}
           {n.endsAt && <span className="hint"> (until {formatDay(n.endsAt.slice(0, 10))} {formatTime(n.endsAt)})</span>}
         </li>
@@ -82,7 +82,7 @@ export function DoctorProfilePage() {
 
       {today && today.sessions.some((s) => s.nowServing || s.waiting !== null) && (
         <section className="panel">
-          <h2>Today's queue</h2>
+          <h2>Today's appointments</h2>
           <ul className="session-grid">
             {today.sessions.filter((s) => s.waiting !== null).map((s) => (
               <li key={s.name} className="session-tile">
@@ -96,7 +96,7 @@ export function DoctorProfilePage() {
       )}
 
       <section className="panel">
-        <h2>Join the queue</h2>
+        <h2>Book an appointment</h2>
         {availability.loading && !availability.data && <Loading />}
         {availability.error ? <p className="alert alert-error">{errorMessage(availability.error)}</p> : null}
         {days.length === 0 && availability.data && <p>This doctor has not published clinic hours yet.</p>}
@@ -113,7 +113,7 @@ export function DoctorProfilePage() {
                       <>
                         <span className="hint">{s.remaining} of {s.capacity} places left</span>
                         <Link className="button primary small" to={`/doctors/${doctor.doctorCode}/book?date=${day.date}&session=${encodeURIComponent(s.name)}`}>
-                          Join queue
+                          Book appointment
                         </Link>
                       </>
                     ) : (

@@ -104,7 +104,7 @@ const copy: Record<PhoneAuthMode, { step: string | null; mobileTitle: string; mo
   patient: {
     step: null,
     mobileTitle: 'Create your patient account',
-    mobileLead: 'Book tokens for yourself and your family and follow the queue live. We will send a 6-digit code to your mobile number.',
+    mobileLead: 'Book tokens for yourself and your family and follow your turn live. We will send a 6-digit code to your mobile number.',
     accountsTitle: 'You already have an account on this number',
     createTitle: 'Your details',
     createLead: 'Only your name is required. You can add family members later.',

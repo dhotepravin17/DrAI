@@ -401,7 +401,7 @@ export const appointmentStatusLabels: Record<AppointmentStatus, string> = {
   InConsultation: 'In consultation',
   Completed: 'Completed',
   Missed: 'Missed turn',
-  Requeued: 'Back in queue',
+  Requeued: 'Back in the list',
   NoShow: 'No-show',
   Cancelled: 'Cancelled',
 }

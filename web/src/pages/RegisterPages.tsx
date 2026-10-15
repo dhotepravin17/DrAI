@@ -17,14 +17,14 @@ export function RegisterChoicePage() {
         <li>
           <Link to="/register/patient" className="role-choice">
             <span className="role-choice-title">I'm a patient</span>
-            <span className="role-choice-text">Book tokens for yourself and your family, and follow the queue live.</span>
+            <span className="role-choice-text">Book tokens for yourself and your family, and follow your turn live.</span>
           </Link>
         </li>
         <li>
           <Link to="/register/doctor" className="role-choice">
             <span className="role-choice-title">I'm a doctor</span>
             <span className="role-choice-text">
-              Register with your Medical Registration ID. After verification you get a Doctor ID and your clinic queue.
+              Register with your Medical Registration ID. After verification you get a Doctor ID and your clinic appointments.
             </span>
           </Link>
         </li>

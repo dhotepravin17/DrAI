@@ -47,7 +47,7 @@ export function ReportsPage() {
         <button type="submit" className="button">Show</button>
       </form>
       {upgradeNeeded ? (
-        <p className="alert alert-warning" role="note">{errorMessage(error)} Your queue history is still available under History.</p>
+        <p className="alert alert-warning" role="note">{errorMessage(error)} Your appointment history is still available under History.</p>
       ) : error ? (
         <p className="alert alert-error" role="alert">{errorMessage(error)}</p>
       ) : null}

@@ -4,7 +4,7 @@ import { useClinicScope } from './clinicScopeState'
 
 /**
  * PRD FR-07: each doctor profile has a shareable URL and a printable QR code for the clinic front desk.
- * Patients scan it to open the profile and join the queue.
+ * Patients scan it to open the profile and book an appointment.
  */
 export function ProfileSharePage() {
   const { current } = useClinicScope()
@@ -43,7 +43,7 @@ export function ProfileSharePage() {
       <h1 className="no-print">Profile and QR code</h1>
       <div className="panel no-print">
         <h2>Your public profile</h2>
-        <p>Share this link with patients. It shows your clinic hours, today's queue and notices, and lets patients join the queue.</p>
+        <p>Share this link with patients. It shows your clinic hours, today's appointments and notices, and lets patients book an appointment.</p>
         <p className="code share-url">{url}</p>
         <div className="actions">
           <button type="button" className="button" onClick={() => void copy()}>{copied ? 'Link copied' : 'Copy link'}</button>
@@ -53,7 +53,7 @@ export function ProfileSharePage() {
       </div>
 
       <div className="panel qr-poster">
-        <p className="qr-title">Scan to join the queue</p>
+        <p className="qr-title">Scan to book an appointment</p>
         <p className="qr-doctor">{current.doctorName}</p>
         <p className="meta">{current.clinicName} · Doctor ID <span className="code">{code}</span></p>
         {qr ? (

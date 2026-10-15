@@ -73,7 +73,7 @@ export function ClinicLayout() {
         </div>
         <nav aria-label="Clinic">
           <ul className="tabs">
-            <li><NavLink className="tab" to="/clinic" end>Queue</NavLink></li>
+            <li><NavLink className="tab" to="/clinic" end>Appointments</NavLink></li>
             <li><NavLink className="tab" to="/clinic/schedule">Schedule</NavLink></li>
             <li><NavLink className="tab" to="/clinic/announcements">Notices &amp; leave</NavLink></li>
             <li><NavLink className="tab" to="/clinic/history">History</NavLink></li>

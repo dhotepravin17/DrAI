@@ -16,7 +16,7 @@ function headline(s: LiveStatus): { text: string; tone: string } {
       return { text: "It's your turn. Please go to the doctor's cabin.", tone: 'success' }
     case 'Missed':
       return {
-        text: `You missed your turn. You will be placed back in the queue after ${s.requeueAfterCompletions ?? 0} more patient(s).`,
+        text: `You missed your turn. You will be placed back in the appointment list after ${s.requeueAfterCompletions ?? 0} more patient(s).`,
         tone: 'warning',
       }
     case 'Completed':
@@ -136,7 +136,7 @@ export function AppointmentPage() {
             await api(`/appointments/${id}/cancel`, { method: 'POST' })
             reload()
           }}>
-          {() => <p>{data.patientName}'s place in the queue will be released. Cancelled tokens are not reused.</p>}
+          {() => <p>{data.patientName}'s appointment will be released. Cancelled tokens are not reused.</p>}
         </ModalForm>
       )}
     </section>

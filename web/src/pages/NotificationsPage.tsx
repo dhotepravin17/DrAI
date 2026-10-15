@@ -36,7 +36,7 @@ export function PushToggle() {
     <div className="panel">
       <h2>Phone alerts</h2>
       {!supported ? (
-        <p>This browser cannot show alerts when the app is closed. Keep your appointment page open to follow the queue.</p>
+        <p>This browser cannot show alerts when the app is closed. Keep your appointment page open to follow your turn.</p>
       ) : needsHomeScreenInstall() ? (
         <p>On iPhone or iPad, tap Share, then <strong>Add to Home Screen</strong>, and open the app from there to turn on alerts.</p>
       ) : (

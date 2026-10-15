@@ -29,7 +29,7 @@ public sealed class QueueEngine(
         {
             var locked = await db.Database.ExecuteSqlInterpolatedAsync(
                 $"UPDATE [QueueSessions] SET [LockVersion] = [LockVersion] + 1 WHERE [Id] = {sessionId}", ct);
-            if (locked == 0) throw ApiException.NotFound("Queue session not found.");
+            if (locked == 0) throw ApiException.NotFound("Appointment session not found.");
 
             // Anything tracked before the lock may be stale; read fresh state now that the lock is held.
             foreach (var entry in db.ChangeTracker.Entries()
@@ -98,7 +98,7 @@ public sealed class QueueScope
     public Appointment? BeingServed => _appointments.FirstOrDefault(a => a.IsBeingServed);
 
     public Appointment Get(Guid appointmentId) =>
-        _appointments.FirstOrDefault(a => a.Id == appointmentId) ?? throw ApiException.NotFound("Appointment not found in this queue.");
+        _appointments.FirstOrDefault(a => a.Id == appointmentId) ?? throw ApiException.NotFound("Appointment not found in this session.");
 
     // ---- Booking ----
 
@@ -109,10 +109,10 @@ public sealed class QueueScope
         if (Session.IsFinished) throw ApiException.Conflict("This session is closed.");
         if (source == BookingSource.Online)
         {
-            if (!Session.AcceptsOnlineBookings) throw ApiException.Conflict("This queue is not accepting online bookings right now.");
+            if (!Session.AcceptsOnlineBookings) throw ApiException.Conflict("This session is not accepting online bookings right now.");
             if (Now >= Session.EndsAt) throw ApiException.Conflict("This session has ended.");
             var booked = _appointments.Count(a => a.Status != AppointmentStatus.Cancelled);
-            if (booked >= Session.Capacity) throw ApiException.Conflict("The queue is full.", "Try another session.");
+            if (booked >= Session.Capacity) throw ApiException.Conflict("This session is fully booked.", "Try another session.");
         }
         if (_appointments.Any(a => a.PatientId == patient.Id && a.IsActive))
             throw ApiException.Conflict($"{patient.FullName} already has an active appointment in this session.");
@@ -161,7 +161,7 @@ public sealed class QueueScope
     public void Open()
     {
         if (Session.State is not (SessionState.Scheduled or SessionState.Paused))
-            throw ApiException.Conflict($"A {Session.State} queue cannot be opened.");
+            throw ApiException.Conflict($"A {Session.State} session cannot be opened.");
         Session.State = SessionState.Open;
         if (Session.OpenedAt is null)
             _analytics.Track(ProductEventNames.QueueSessionOpened, new { doctorId = Doctor.Id, sessionId = Session.Id, booked = Booked() });
@@ -171,14 +171,14 @@ public sealed class QueueScope
 
     public void Pause()
     {
-        if (Session.State != SessionState.Open) throw ApiException.Conflict("Only an open queue can be paused.");
+        if (Session.State != SessionState.Open) throw ApiException.Conflict("Only open appointments can be paused.");
         Session.State = SessionState.Paused;
         _audit.Record("PauseQueue", "QueueSession", Session.Id.ToString());
     }
 
     public void Resume()
     {
-        if (Session.State != SessionState.Paused) throw ApiException.Conflict("Only a paused queue can be resumed.");
+        if (Session.State != SessionState.Paused) throw ApiException.Conflict("Only paused appointments can be resumed.");
         Session.State = SessionState.Open;
         _audit.Record("ResumeQueue", "QueueSession", Session.Id.ToString());
     }
@@ -187,7 +187,7 @@ public sealed class QueueScope
     {
         if (Session.IsFinished) throw ApiException.Conflict("This session is already closed.");
         if (BeingServed is { } served)
-            throw ApiException.Conflict($"Complete or mark {served.Token} as missed before closing the queue.");
+            throw ApiException.Conflict($"Complete or mark {served.Token} as missed before closing the session.");
 
         foreach (var a in _appointments.Where(a => a.Status == AppointmentStatus.Missed).ToList())
             Transition(a, AppointmentStatus.NoShow, "SessionClosed");
@@ -235,8 +235,8 @@ public sealed class QueueScope
         if (Session.IsFinished) return;
         Session.DelayMinutes = minutes;
         foreach (var a in _appointments.Where(a => a.IsWaiting).ToList())
-            await NotifyAsync(a, NotificationEvents.QueueDelay, $"delay:{a.Id}:{Session.LockVersion}", "Queue delay",
-                $"{Doctor.FullName}'s queue is running about {minutes} min late. {message}", ct);
+            await NotifyAsync(a, NotificationEvents.QueueDelay, $"delay:{a.Id}:{Session.LockVersion}", "Appointments delayed",
+                $"{Doctor.FullName}'s appointments are running about {minutes} min late. {message}", ct);
     }
 
     public async Task NotifyWaitingAsync(string eventType, string key, string title, string body, CancellationToken ct)
@@ -250,7 +250,7 @@ public sealed class QueueScope
     public async Task CallAsync(Appointment? target, CancellationToken ct)
     {
         if (Session.State == SessionState.Scheduled) Open();
-        if (Session.State != SessionState.Open) throw ApiException.Conflict("Resume the queue to call patients.");
+        if (Session.State != SessionState.Open) throw ApiException.Conflict("Resume appointments to call patients.");
         if (BeingServed is { } served)
             throw ApiException.Conflict($"Complete or mark {served.Token} as missed before calling the next patient.");
 
@@ -301,13 +301,13 @@ public sealed class QueueScope
         a.MissedAtCompletion = Session.CompletionCount;
         await NotifyAsync(a, NotificationEvents.TurnMissed, $"missed:{a.Id}:{a.MissCount}",
             "You missed your turn",
-            $"{a.Token} missed the call. You will be placed back in the queue after {Doctor.RequeueAfterCompletions} patients.", ct);
+            $"{a.Token} missed the call. You will be placed back in the appointment list after {Doctor.RequeueAfterCompletions} patients.", ct);
     }
 
     public async Task RequeueNowAsync(Appointment a, CancellationToken ct)
     {
-        if (a.Status != AppointmentStatus.Missed) throw ApiException.Conflict($"{a.Token} is not waiting to be requeued.");
-        await RequeueAsync(a, "Requeued early by clinic", ct);
+        if (a.Status != AppointmentStatus.Missed) throw ApiException.Conflict($"{a.Token} is not waiting to be added back.");
+        await RequeueAsync(a, "Added back early by clinic", ct);
     }
 
     public void CheckIn(Appointment a)
@@ -343,7 +343,7 @@ public sealed class QueueScope
         a.PrioritizedAt = null;
         a.PrioritySequence = null;
         a.UpdatedAt = Now;
-        AddEvent(a, "Deferred", a.Status, a.Status, "Moved to the end of the queue");
+        AddEvent(a, "Deferred", a.Status, a.Status, "Moved to the end of the list");
     }
 
     public async Task CancelAsync(Appointment a, CancellationReason reason, string? note, CancellationToken ct)
@@ -387,7 +387,7 @@ public sealed class QueueScope
         {
             foreach (var a in Waiting.Where(a => a.Priority == QueuePriority.Normal && a.TurnApproachingNotifiedAt is not null))
                 await NotifyAsync(a, NotificationEvents.Prioritized, $"reordered:{a.Id}:{Session.LockVersion}",
-                    "Queue update", $"An urgent case is being seen first. {a.Token} may take a little longer.", ct);
+                    "Appointment update", $"An urgent case is being seen first. {a.Token} may take a little longer.", ct);
         }
 
         // Turn-approaching alert (PRD FR-11): once, when the patient is within the threshold and the doctor is seeing patients.
@@ -414,7 +414,7 @@ public sealed class QueueScope
         Transition(a, AppointmentStatus.Requeued, reason);
         var position = QueueOrdering.PatientsAhead(Waiting, a.Id) + 1;
         await NotifyAsync(a, NotificationEvents.Requeued, $"requeued:{a.Id}:{a.MissCount}",
-            "Back in the queue", $"{a.Token} is back in the queue with {Doctor.FullName}. Position: {position}.", ct);
+            "Back in the list", $"{a.Token} is back in the appointment list with {Doctor.FullName}. Position: {position}.", ct);
     }
 
     // ---- Helpers ----

@@ -70,7 +70,7 @@ function WeeklySessions({ initial, readOnly, onSaved }: { initial: SessionTempla
     <form className="panel" onSubmit={save}>
       <h2>Weekly clinic hours</h2>
       <p className="hint">
-        Changes apply to dates that do not have a queue yet. For a date that already has bookings, add a date exception below so patients are told.
+        Changes apply to dates that do not have appointments yet. For a date that already has bookings, add a date exception below so patients are told.
       </p>
       <FormAlert message={error} />
       {saved && <p className="alert alert-success" role="status">Weekly hours saved.</p>}
@@ -261,9 +261,9 @@ function SettingsPanel({ settings, readOnly, onSaved }: { settings: QueueSetting
 
   return (
     <form className="panel" onSubmit={save}>
-      <h2>Queue rules</h2>
+      <h2>Appointment rules</h2>
       <FormAlert message={error} />
-      {saved && <p className="alert alert-success" role="status">Queue rules saved.</p>}
+      {saved && <p className="alert alert-success" role="status">Appointment rules saved.</p>}
       <fieldset disabled={readOnly}>
         <div className="form-row">
           <TextField name="bookingWindowDays" label="Booking opens (days ahead)" type="number" min={0} max={30} defaultValue={settings.bookingWindowDays} errors={fieldErrors.bookingWindowDays} />
@@ -272,7 +272,7 @@ function SettingsPanel({ settings, readOnly, onSaved }: { settings: QueueSetting
         </div>
         <div className="form-row">
           <TextField name="gracePeriodMinutes" label="Wait before marking missed (min)" type="number" min={0} max={15} defaultValue={settings.gracePeriodMinutes} errors={fieldErrors.gracePeriodMinutes} />
-          <TextField name="requeueAfterCompletions" label="Requeue missed patient after" type="number" min={1} max={10} defaultValue={settings.requeueAfterCompletions}
+          <TextField name="requeueAfterCompletions" label="Return a missed patient to the list after" type="number" min={1} max={10} defaultValue={settings.requeueAfterCompletions}
             hint="Consultations by other patients" errors={fieldErrors.requeueAfterCompletions} />
           <TextField name="turnApproachingThreshold" label="Alert when this many are ahead" type="number" min={1} max={10} defaultValue={settings.turnApproachingThreshold} errors={fieldErrors.turnApproachingThreshold} />
         </div>
@@ -280,10 +280,10 @@ function SettingsPanel({ settings, readOnly, onSaved }: { settings: QueueSetting
           <label htmlFor="secondMissRule">If a patient misses their turn twice</label>
           <select id="secondMissRule" name="secondMissRule" defaultValue={settings.secondMissRule}>
             <option value="NoShow">Mark as not attended</option>
-            <option value="RequeueAgain">Requeue them again</option>
+            <option value="RequeueAgain">Return them to the list again</option>
           </select>
         </div>
-        {!readOnly && <button type="submit" className="button primary">Save queue rules</button>}
+        {!readOnly && <button type="submit" className="button primary">Save appointment rules</button>}
       </fieldset>
     </form>
   )

@@ -42,7 +42,7 @@ export function Layout() {
               {isAdmin && <li><NavLink to="/admin" end>Overview</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/doctors">Doctors</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/patients">Patients</NavLink></li>}
-              {isAdmin && <li><NavLink to="/admin/queues">Queues</NavLink></li>}
+              {isAdmin && <li><NavLink to="/admin/queues">Appointments</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/notifications">Failures</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/analytics">Analytics</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/audit">Audit</NavLink></li>}

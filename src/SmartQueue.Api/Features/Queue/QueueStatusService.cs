@@ -87,7 +87,7 @@ public sealed class QueueStatusService(AppDbContext db, TimeProvider clock)
 
             var notices = await NoticesAsync(doctor.Id, session.StartsAt.AddHours(-12), session.EndsAt, ct);
             if (session.State == SessionState.Paused)
-                notices.Insert(0, new NoticeDto("QueuePaused", "The doctor has paused this queue. Your place is kept.", now, null));
+                notices.Insert(0, new NoticeDto("QueuePaused", "The doctor has paused appointments. Your place is kept.", now, null));
 
             result.Add(new LiveStatus(
                 a.Id, a.Reference, a.Token, a.Status, a.PatientId, patients[a.PatientId],

@@ -17,7 +17,7 @@ export function AdminOverviewPage() {
   const tiles: [string, number | undefined, string][] = [
     ['Doctors awaiting verification', data?.pendingDoctors, '/admin/doctors'],
     ['Verified doctors', data?.verifiedDoctors, '/admin/doctors?status=Verified'],
-    ['Queues open now', data?.openQueuesToday, '/admin/queues'],
+    ['Appointment sessions open now', data?.openQueuesToday, '/admin/queues'],
     ['Appointments today', data?.appointmentsToday, '/admin/queues'],
     ['Notification failures (24 h)', data?.notificationFailures24h, '/admin/notifications'],
     ['Notifications waiting to send', data?.outboxBacklog, '/admin/notifications'],
@@ -138,9 +138,9 @@ export function AdminQueuesPage() {
   const { data, error, loading, reload } = useApi<AdminQueueRow[]>(`/admin/queues?date=${date}`)
   return (
     <section className="stack">
-      <title>Queues · Smart Doctor Queue</title>
+      <title>Appointments · Smart Doctor Queue</title>
       <div className="page-head">
-        <h1>Queues</h1>
+        <h1>Appointments</h1>
         <div className="inline-field">
           <input type="date" aria-label="Date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} />
           <button type="button" className="button small" onClick={reload}>Refresh</button>

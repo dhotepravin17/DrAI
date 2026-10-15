@@ -56,7 +56,7 @@ export function HomePage() {
     <>
       <title>Find a doctor · Smart Doctor Queue</title>
       <section className="hero">
-        <h1>Join your doctor's queue from home</h1>
+        <h1>Book your doctor's appointment from home</h1>
         <p className="lead">Find your doctor, see today's clinic status, and get alerted when your turn is close.</p>
         {!token && (
           <div className="register-banner">

@@ -1,7 +1,7 @@
 {
   "name": "Smart Doctor Queue",
   "short_name": "DoctorQueue",
-  "description": "Find your doctor, join the clinic queue, and get alerted when your turn is near.",
+  "description": "Find your doctor, book your clinic appointment, and get alerted when your turn is near.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f6f8f8",
