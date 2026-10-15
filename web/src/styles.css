@@ -302,3 +302,13 @@ a.tab.active { color: var(--text); font-weight: 600; border-bottom-color: var(--
 .table-wrap td input, .table-wrap td select { min-height: 40px; padding: 0.35rem 0.5rem; }
 
 .search-main { margin-bottom: 0.75rem; }
+
+/* ---- Registration ---- */
+.role-choice-list { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.75rem; }
+.role-choice { display: grid; gap: 0.25rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); text-decoration: none; min-height: 44px; }
+.role-choice:hover, .role-choice:focus-visible { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+.role-choice-title { font-weight: 600; font-size: 1.1rem; color: var(--brand-strong); }
+.role-choice-text { color: var(--muted); }
+.step-label { margin: 0 0 0.25rem; font-weight: 600; color: var(--brand-strong); }
+.register-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: 1rem; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--info-bg); }
+.register-banner p { margin: 0; flex: 1 1 14rem; }

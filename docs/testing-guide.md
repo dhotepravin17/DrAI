@@ -20,24 +20,29 @@
    - Install Google Authenticator or Microsoft Authenticator on your phone.
    - Scan the code shown on screen, or type in the secret.
    - Enter the 6-digit code from the app.
-3. Check that the menu shows: **Overview, Doctors, Patients, Queues, Failures, Analytics, Audit, Cities**.
+3. You land on the **Admin overview**. Check that the menu shows: **Overview, Doctors, Patients, Queues, Failures, Analytics, Audit, Cities**.
+
+Where each role lands after signing in: Super Admin → Admin overview; verified doctor or receptionist → Clinic queue;
+doctor waiting for verification → registration status; patient → Appointments. If you were sent to sign in from a
+protected page, you go back to that page instead.
 
 ---
 
 ## 2. Doctor registration (Window B)
 
-1. Sign in with **9876500001** and create the account (enter a name, accept the terms).
-2. Click **For doctors** in the menu.
-3. Fill in:
+1. Click **Register** (top right), then **I'm a doctor**. Or click **Join as a doctor** on the home page.
+2. **Step 1 of 2 · Your account:** enter **9876500001**, then the code shown on screen, then your name, and accept the terms.
+3. You go straight to **Step 2 of 2 · Professional details**. Fill in:
    - Specialty
    - Medical Registration ID, for example `MMC-12345`
    - City: **Nagpur (NGP)**
    - Clinic name and address
-4. Accept the declaration and click **Submit**.
+4. Accept the declaration and click **Submit**. You see "Submitted for verification".
+   - If you sign out and sign in again now, you land on this registration status page.
 5. Go to **Window A**: Admin → **Doctors**. The new doctor is waiting for verification.
    - Open the doctor and click **Verify**.
    - Note the Doctor ID that is issued, for example `NGP-Dr-0001`.
-6. Back in **Window B**, refresh the page. A **Clinic** item now appears in the menu.
+6. Back in **Window B**, sign out and sign in again with 9876500001. You now land on the **Clinic** queue.
 7. Go to Clinic → **Schedule**:
    - Add a **Morning** session for today's weekday, for example 08:00–14:00, capacity 20.
    - Save.
@@ -46,7 +51,8 @@
 
 ## 3. Patient booking (Window C)
 
-1. Sign in with **9876500002** and create the account.
+1. Click **Register**, then **I'm a patient** (or **Register as a patient** on the home page).
+   Enter **9876500002**, the code, and your name. You land on **Appointments**.
 2. Go to **Family** and add a child (enter a date of birth and confirm you are the guardian).
 3. Search for the doctor by Doctor ID or name, open the profile and click **Book**.
    - Choose today's **Morning** session.

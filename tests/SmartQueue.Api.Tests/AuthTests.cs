@@ -28,6 +28,30 @@ public class AuthTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task Registration_records_which_page_the_account_came_from()
+    {
+        var patient = await _api.CreatePatientAsync("No Intent");
+        var mobile = TestApi.NextMobile();
+        var response = await _api.Anonymous().PostAsJsonAsync("/api/v1/auth/accounts", new
+        {
+            phoneTicket = await _api.VerifyPhoneAsync(mobile),
+            fullName = "Doctor Intent",
+            privacyNoticeVersion = LegalTexts.PrivacyNoticeVersion,
+            termsVersion = LegalTexts.TermsVersion,
+            intent = "Doctor",
+        });
+        response.EnsureSuccessStatusCode();
+        var doctorUserId = (await response.JsonAsync()).GetProperty("userId").GetGuid();
+
+        Task<string?> DimensionFor(Guid userId) => factory.WithDbAsync(db => db.ProductEvents
+            .Where(e => e.Name == "patient_registered" && e.PropertiesJson.Contains(userId.ToString()))
+            .Select(e => e.Dimension).SingleAsync());
+
+        Assert.Equal("Patient", await DimensionFor(patient.UserId));
+        Assert.Equal("Doctor", await DimensionFor(doctorUserId));
+    }
+
+    [Fact]
     public async Task Rejects_invalid_mobile_number()
     {
         var response = await _api.Anonymous().PostAsJsonAsync("/api/v1/auth/otp/request", new { mobileNumber = "12345" });

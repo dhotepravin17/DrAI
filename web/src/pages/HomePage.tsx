@@ -3,9 +3,11 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { errorMessage, loadReference } from '../api/client'
 import type { DoctorCard, Paged, ReferenceData } from '../api/types'
 import { useApi } from '../api/useApi'
+import { useAuth } from '../auth/authState'
 import { Loading } from '../components/Layout'
 
 export function HomePage() {
+  const { token } = useAuth()
   const [params, setParams] = useSearchParams()
   const [reference, setReference] = useState<ReferenceData | null>(null)
 
@@ -55,6 +57,13 @@ export function HomePage() {
       <section className="hero">
         <h1>Join your doctor's queue from home</h1>
         <p className="lead">Find your doctor, see today's clinic status, and get alerted when your turn is close.</p>
+        {!token && (
+          <div className="register-banner">
+            <p>New to Smart Doctor Queue?</p>
+            <Link to="/register/patient" className="button primary">Register as a patient</Link>
+            <Link to="/register/doctor" className="button">Join as a doctor</Link>
+          </div>
+        )}
         <form role="search" method="get" className="search-form" onSubmit={handleSubmit} key={`${q}|${city}|${specialty}`}>
           <div className="field search-main">
             <label htmlFor="q">Search doctors</label>

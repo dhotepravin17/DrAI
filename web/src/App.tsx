@@ -24,6 +24,7 @@ import { DoctorRegistrationPage } from './pages/DoctorRegistrationPage'
 import { FamilyPage } from './pages/FamilyPage'
 import { HomePage } from './pages/HomePage'
 import { NotificationsPage } from './pages/NotificationsPage'
+import { DoctorRegisterPage, PatientRegisterPage, RegisterChoicePage } from './pages/RegisterPages'
 import { SignInPage } from './pages/SignInPage'
 import { VisitsPage } from './pages/VisitsPage'
 
@@ -38,6 +39,9 @@ const router = createBrowserRouter([
       { path: 'doctors/:code', element: <DoctorProfilePage /> },
       { path: 'doctors/:code/book', element: signedIn(<BookPage />) },
       { path: 'sign-in', element: <SignInPage /> },
+      { path: 'register', element: <RegisterChoicePage /> },
+      { path: 'register/patient', element: <PatientRegisterPage /> },
+      { path: 'register/doctor', element: <DoctorRegisterPage /> },
       { path: 'appointments', element: signedIn(<AppointmentsPage />) },
       { path: 'appointments/:id', element: signedIn(<AppointmentPage />) },
       { path: 'visits', element: signedIn(<VisitsPage />) },

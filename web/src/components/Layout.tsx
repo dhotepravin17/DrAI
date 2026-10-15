@@ -30,7 +30,7 @@ export function Layout() {
               {isPatient && <li><NavLink to="/visits">Visits</NavLink></li>}
               {isPatient && <li><NavLink to="/family">Family</NavLink></li>}
               {hasClinic && <li><NavLink to="/clinic">Clinic</NavLink></li>}
-              {token && me && !isAdmin && !me.doctor && !hasClinic && <li><NavLink to="/doctor/register">For doctors</NavLink></li>}
+              {token && me && !isAdmin && !me.doctor && !hasClinic && <li><NavLink to="/doctor/register">Register as a doctor</NavLink></li>}
               {me?.doctor && me.doctor.status !== 'Verified' && <li><NavLink to="/doctor/register">Registration</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin" end>Overview</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/doctors">Doctors</NavLink></li>}
@@ -57,6 +57,7 @@ export function Layout() {
                   <NavLink to="/sign-in">Sign in</NavLink>
                 )}
               </li>
+              {!token && <li><NavLink to="/register" className="button primary small">Register</NavLink></li>}
             </ul>
           </nav>
         </div>

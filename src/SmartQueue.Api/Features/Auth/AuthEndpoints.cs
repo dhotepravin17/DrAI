@@ -19,7 +19,7 @@ public static class AuthEndpoints
     public sealed record SessionRequest(string? PhoneTicket, Guid UserId);
     public sealed record CreateAccountRequest(
         string? PhoneTicket, string? FullName, string? PrivacyNoticeVersion, string? TermsVersion,
-        DateOnly? DateOfBirth, Gender? Gender, string? City, string? Email);
+        DateOnly? DateOfBirth, Gender? Gender, string? City, string? Email, string? Intent = null);
     public sealed record TokenResponse(string AccessToken, DateTimeOffset ExpiresAt, Guid UserId, IReadOnlyList<RoleName> Roles);
     public sealed record MfaEnrollment(string Secret, string OtpAuthUri);
     public sealed record MfaChallenge(bool MfaRequired, string MfaTicket, MfaEnrollment? Enrollment);
@@ -191,7 +191,9 @@ public static class AuthEndpoints
         db.ConsentRecords.AddRange(
             new ConsentRecord { UserId = user.Id, Type = ConsentType.PrivacyNotice, Version = LegalTexts.PrivacyNoticeVersion, GrantedAt = now, IpAddress = ip },
             new ConsentRecord { UserId = user.Id, Type = ConsentType.TermsOfUse, Version = LegalTexts.TermsVersion, GrantedAt = now, IpAddress = ip });
-        analytics.Track(ProductEventNames.PatientRegistered, new { userId = user.Id, channel = "Web" }, "Web");
+        // Which registration page the account came from; anything else counts as a patient sign-up.
+        var intent = string.Equals(request.Intent, "Doctor", StringComparison.OrdinalIgnoreCase) ? "Doctor" : "Patient";
+        analytics.Track(ProductEventNames.PatientRegistered, new { userId = user.Id, channel = "Web", intent }, intent);
         await db.SaveChangesAsync(ct);
 
         return Results.Ok(Issue(tokens, user));
