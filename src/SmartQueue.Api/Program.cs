@@ -14,6 +14,7 @@ using SmartQueue.Api.Features.Family;
 using SmartQueue.Api.Features.History;
 using SmartQueue.Api.Features.Staff;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using SmartQueue.Api.Features.Notifications;
 using SmartQueue.Api.Features.Queue;
 using SmartQueue.Api.Features.Scheduling;
@@ -69,7 +70,11 @@ builder.Services.AddSingleton<WebPushSender>();
 builder.Services.AddScoped<NotificationDispatcher>();
 builder.Services.AddHostedService<NotificationWorker>();
 builder.Services.AddHttpClient("webpush", c => c.Timeout = TimeSpan.FromSeconds(10));
-builder.Services.AddDataProtection().SetApplicationName("SmartDoctorQueue");
+// The application name must stay the same: it scopes the keys that protect stored authenticator secrets.
+// Keys live in SQL Server so they survive container restarts and redeployments.
+builder.Services.AddDataProtection().SetApplicationName("SmartDoctorQueue").PersistKeysToDbContext<AppDbContext>();
+builder.Services.AddOptions<ProxyOptions>().BindConfiguration(ProxyOptions.Section);
+builder.Services.AddOptions<ForwardedHeadersOptions>().Configure<IOptions<ProxyOptions>>((forwarded, proxy) => proxy.Value.Apply(forwarded));
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
@@ -101,6 +106,9 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Behind a reverse proxy (Caddy, App Service, a load balancer) the client address and scheme come from
+// X-Forwarded-For/Proto. Must run first so rate limits and audit logs see the real client.
+app.UseForwardedHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 if (app.Environment.IsDevelopment())
@@ -108,6 +116,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseWebApp();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
@@ -131,6 +140,7 @@ api.MapAdminOversightEndpoints();
 api.MapAnalyticsEndpoints();
 app.MapHub<QueueHub>("/hubs/queue");
 app.MapGet("/health", () => Results.Ok(new { status = "ok" })).ExcludeFromDescription();
+app.MapWebAppFallback();
 
 using (var scope = app.Services.CreateScope())
 {

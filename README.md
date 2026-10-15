@@ -51,6 +51,16 @@ dotnet test          # creates and deletes a temporary LocalDB database
 cd web && npm run build && npm run lint
 ```
 
+To test against another SQL Server (for example a Docker container), set `SMARTQUEUE_TEST_SQL` to a connection
+string without `Database=`. GitHub Actions does this on every push (`.github/workflows/ci.yml`).
+
+## Deploy
+
+See **[docs/deployment.md](docs/deployment.md)**: free testing options, production options with costs, and the
+scripted budget-server setup in [`deploy/vps`](deploy/vps) (Docker Compose: app, SQL Server Express, automatic
+HTTPS, nightly backups). Every push publishes container images to `ghcr.io/dhotepravin17/drai` and
+`ghcr.io/dhotepravin17/drai-migrator` (`.github/workflows/image.yml`).
+
 ## Database migrations
 
 ```sh
@@ -75,6 +85,10 @@ Set these through environment variables or a secret store, never in committed fi
 | `Plans__Free__StaffAccounts`, `Plans__Free__HistoryDays`, … | Plan limits (PRD §39, pending OQ-05). Super Admins change a doctor's plan on the doctor's page |
 | `Retention__*` | Retention periods (PRD §32.4, pending OQ-03). The cleanup runs every 6 hours |
 | `Push__*` | VAPID keys for Web Push |
+| `Proxy__TrustAll`, `Proxy__TrustedProxies__0` | Trust X-Forwarded-For/Proto from the reverse proxy so rate limits and audit logs see real client addresses |
+
+Data Protection keys (they protect stored authenticator secrets) are kept in the `DataProtectionKeys` table, so they
+survive restarts. The full list of settings is in [docs/deployment.md](docs/deployment.md#7-configuration-reference).
 
 `Otp:ExposeCodeInResponse` only takes effect in the Development environment.
 

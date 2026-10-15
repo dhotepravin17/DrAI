@@ -20,8 +20,15 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     /// <summary>Wednesday 14 October 2026, 10:00 IST. Business logic runs on this clock; tokens use the real clock.</summary>
     public static readonly DateTimeOffset Start = new(2026, 10, 14, 4, 30, 0, TimeSpan.Zero);
 
+    /// <summary>
+    /// SQL Server for the throwaway test database: LocalDB on Windows, or the server in SMARTQUEUE_TEST_SQL
+    /// (a connection string without Database=, e.g. a SQL Server container in CI).
+    /// </summary>
     private readonly string _connectionString =
-        $"Server=(localdb)\\SmartQueue;Database=SmartQueue_Test_{Guid.NewGuid():N};Trusted_Connection=True;TrustServerCertificate=True";
+        (Environment.GetEnvironmentVariable("SMARTQUEUE_TEST_SQL") is { Length: > 0 } server
+            ? server.TrimEnd(';')
+            : "Server=(localdb)\\SmartQueue;Trusted_Connection=True;TrustServerCertificate=True")
+        + $";Database=SmartQueue_Test_{Guid.NewGuid():N}";
 
     public CapturingSmsSender Sms { get; } = new();
     public FakeTimeProvider Clock { get; } = new(Start);
