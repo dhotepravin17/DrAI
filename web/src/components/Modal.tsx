@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { useState, type FormEvent, type ReactNode } from 'react'
 import { ApiError, errorMessage } from '../api/client'
 import { FormAlert } from './Fields'
+import { useModalDialog } from './useModalDialog'
 
 /**
  * A modal form built on <dialog>. Esc and Cancel close it; the submit handler receives the form data.
@@ -16,16 +17,10 @@ export function ModalForm({
   onClose: () => void
   children: (fieldErrors: Record<string, string[]>) => ReactNode
 }) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const dialogRef = useModalDialog()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-    dialog?.showModal()
-    return () => dialog?.close()
-  }, [])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()

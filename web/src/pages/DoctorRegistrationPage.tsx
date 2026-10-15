@@ -121,6 +121,7 @@ function RegistrationForm({
   registration: Registration | null
   onSaved: (r: Registration) => void
 }) {
+  const { me } = useAuth()
   const [busy, setBusy] = useState<'save' | 'submit' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState<string | null>(null)
@@ -184,7 +185,7 @@ function RegistrationForm({
       <fieldset>
         <legend>Your details</legend>
         <TextField name="fullName" label="Full name" hint="As it appears in your medical registration" autoComplete="name"
-          maxLength={120} defaultValue={r?.fullName ?? ''} errors={fieldErrors.fullName} />
+          maxLength={120} defaultValue={r?.fullName ?? me?.fullName ?? ''} errors={fieldErrors.fullName} />
         <TextField name="email" label="Email" type="email" optional autoComplete="email" spellCheck={false}
           defaultValue={r?.email ?? ''} errors={fieldErrors.email} />
       </fieldset>

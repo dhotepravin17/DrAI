@@ -8,12 +8,16 @@ import { doctorHomePath } from '../auth/landing'
 
 export function Layout() {
   const { me, token, signOut } = useAuth()
+  const { pathname } = useLocation()
   const isAdmin = me?.roles.includes('SuperAdmin') ?? false
   const isPatient = Boolean(me?.patient)
   const hasClinic = me?.doctor?.status === 'Verified' || (me?.roles.includes('Receptionist') ?? false)
-  // Doctors see only doctor items; the patient menu (and doctor search) is for everyone else.
+  // Doctors see only doctor items; the patient menu (and doctor search) is for everyone else. A new doctor filling in
+  // step 2 has no doctor record until the form is first saved, so the registration page itself also uses the doctor menu.
   const doctor = me?.doctor ?? null
-  const patientArea = isPatient && !doctor
+  const doctorMode = Boolean(doctor) || (Boolean(me) && !isAdmin && pathname.startsWith('/doctor/register'))
+  const patientArea = isPatient && !doctorMode
+  const doctorHome = doctor ? doctorHomePath(doctor) : '/doctor/register'
   const notifications = useApi<NotificationList>(me && isPatient ? '/notifications' : null)
   usePolling(notifications.reload, 60_000, Boolean(me && isPatient))
   const unread = notifications.data?.unread ?? 0
@@ -23,18 +27,18 @@ export function Layout() {
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="container header-inner">
-          <Link to={doctor ? doctorHomePath(doctor) : '/'} className="brand">
+          <Link to={doctorMode ? doctorHome : '/'} className="brand">
             <span className="brand-mark" aria-hidden="true">+</span>
             Smart Doctor Queue
           </Link>
           <nav aria-label="Main">
             <ul className="nav-list">
-              {!doctor && <li><NavLink to="/" end>Find a doctor</NavLink></li>}
+              {!doctorMode && <li><NavLink to="/" end>Find a doctor</NavLink></li>}
               {patientArea && <li><NavLink to="/appointments">Appointments</NavLink></li>}
               {patientArea && <li><NavLink to="/visits">Visits</NavLink></li>}
               {patientArea && <li><NavLink to="/family">Family</NavLink></li>}
               {hasClinic && <li><NavLink to="/clinic">Clinic</NavLink></li>}
-              {doctor && doctor.status !== 'Verified' && <li><NavLink to="/doctor/register">Registration</NavLink></li>}
+              {doctorMode && doctor?.status !== 'Verified' && <li><NavLink to="/doctor/register">Registration</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin" end>Overview</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/doctors">Doctors</NavLink></li>}
               {isAdmin && <li><NavLink to="/admin/patients">Patients</NavLink></li>}
