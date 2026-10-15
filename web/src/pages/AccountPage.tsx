@@ -42,7 +42,7 @@ export function AccountPage() {
   async function respond(id: string, action: 'accept' | 'decline') {
     try {
       await api(`/me/staff-invitations/${id}/${action}`, { method: 'POST' })
-      setMessage(action === 'accept' ? 'You can now manage this clinic’s queue from the Clinic menu.' : 'Invitation declined.')
+      setMessage(action === 'accept' ? 'You can now manage this clinic’s appointments from the Clinic menu.' : 'Invitation declined.')
       invitations.reload()
       await refreshMe()
     } catch (e) {
@@ -56,7 +56,7 @@ export function AccountPage() {
       const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
       const link = document.createElement('a')
       link.href = url
-      link.download = 'smart-doctor-queue-data.json'
+      link.download = 'valmedo-data.json'
       link.click()
       URL.revokeObjectURL(url)
     } catch (e) {
@@ -66,7 +66,7 @@ export function AccountPage() {
 
   return (
     <section className="stack">
-      <title>Account · Smart Doctor Queue</title>
+      <title>Account · Valmedo</title>
       <h1>Account</h1>
       {message && <p className="alert alert-success" role="status">{message}</p>}
       <FormAlert message={error} />
@@ -77,7 +77,7 @@ export function AccountPage() {
           <ul className="card-list">
             {invitations.data.map((i) => (
               <li key={i.invitationId} className="subpanel person-card">
-                <span><strong>{i.doctorName}</strong> ({i.clinicName}) invited you to manage their queue · {formatDate(i.createdAt)}</span>
+                <span><strong>{i.doctorName}</strong> ({i.clinicName}) invited you to manage their appointments · {formatDate(i.createdAt)}</span>
                 <div className="actions">
                   <button type="button" className="button primary small" onClick={() => void respond(i.invitationId, 'accept')}>Accept</button>
                   <button type="button" className="button small" onClick={() => void respond(i.invitationId, 'decline')}>Decline</button>

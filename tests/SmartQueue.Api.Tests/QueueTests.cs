@@ -287,7 +287,7 @@ public class QueueTests(ApiFactory factory)
         Assert.Equal(["Morning", "Evening"], today.Select(s => s.GetProperty("name").GetString()));
         Assert.True(today[0].GetProperty("bookable").GetBoolean());
         Assert.False(today[1].GetProperty("bookable").GetBoolean());
-        Assert.Equal("Queue full", today[1].GetProperty("reason").GetString());
+        Assert.Equal("Fully booked", today[1].GetProperty("reason").GetString());
     }
 
     [Fact]

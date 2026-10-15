@@ -1,6 +1,8 @@
-# Smart Doctor Queue
+<img src="web/public/logo.svg" alt="Valmedo - Appointment" width="300">
 
-Multi-doctor, real-time clinic queue platform. The product requirements are in [docs/PRD.md](docs/PRD.md).
+# Valmedo - Appointment
+
+Multi-doctor, real-time clinic appointment platform. The product requirements are in [docs/PRD.md](docs/PRD.md).
 
 **Current status:** PRD phases 1–4 are implemented: OTP sign-in, patient and family accounts, doctor registration with the mandatory declaration and Super Admin verification, doctor search and profiles, schedules, online and walk-in booking, the live queue with emergency priority and five-patient missed-turn requeue, real-time updates, in-app/Web Push/SMS notifications through an outbox, visit and doctor history, and Super Admin oversight with audit logs. Phase 5 groundwork is in place: a DLT-ready SMS gateway, product analytics (PRD §38), Free/Pro/Premium plan limits (§39), data-retention cleanup (§32.4), a k6 load test, and a backup/restore drill. What remains before the pilot is listed under [Before the pilot](#before-the-pilot).
 
@@ -40,7 +42,7 @@ npm run dev
 
 In Development there is no SMS gateway: the one-time code is shown on the sign-in screen and written to the API log.
 
-The development Super Admin signs in with mobile number **9000000001** (configured in `appsettings.Development.json` under `Bootstrap:SuperAdmins`).
+The development Super Admin signs in with mobile number **9000000001** (configured in `appsettings.Development.json` under `Bootstrap:SuperAdmins`). In development the authenticator-app step is off (`Auth:AdminMfaRequired` is `false`), so the phone code is enough.
 
 ## Test
 
@@ -48,6 +50,16 @@ The development Super Admin signs in with mobile number **9000000001** (configur
 dotnet test          # creates and deletes a temporary LocalDB database
 cd web && npm run build && npm run lint
 ```
+
+To test against another SQL Server (for example a Docker container), set `SMARTQUEUE_TEST_SQL` to a connection
+string without `Database=`. GitHub Actions does this on every push (`.github/workflows/ci.yml`).
+
+## Deploy
+
+See **[docs/deployment.md](docs/deployment.md)**: free testing options, production options with costs, and the
+scripted budget-server setup in [`deploy/vps`](deploy/vps) (Docker Compose: app, SQL Server Express, automatic
+HTTPS, nightly backups). Every push publishes container images to `ghcr.io/dhotepravin17/drai` and
+`ghcr.io/dhotepravin17/drai-migrator` (`.github/workflows/image.yml`).
 
 ## Database migrations
 
@@ -65,6 +77,7 @@ Set these through environment variables or a secret store, never in committed fi
 | `ConnectionStrings__Default` | SQL Server connection string |
 | `Jwt__SigningKey` | At least 32 random characters; the app refuses to start without it |
 | `Bootstrap__SuperAdmins__0__MobileNumber` | Seeds the first Super Admin account |
+| `Auth__AdminMfaRequired` | `true` (default) asks Super Admins for an authenticator-app code after the phone code (PRD §27.4); `false` signs them in with the phone code alone |
 | `Bootstrap__ApplyMigrationsOnStartup` | `false` in production; run migrations as a deployment step |
 | `Sms__Provider` | `Http` to send real SMS; unset logs messages instead (development) |
 | `Sms__Endpoint`, `Sms__ApiKey` | HTTPS gateway URL and bearer key. Each message is POSTed as `{ to, senderId, dltEntityId, dltTemplateId, type, message }` |
@@ -72,6 +85,10 @@ Set these through environment variables or a secret store, never in committed fi
 | `Plans__Free__StaffAccounts`, `Plans__Free__HistoryDays`, … | Plan limits (PRD §39, pending OQ-05). Super Admins change a doctor's plan on the doctor's page |
 | `Retention__*` | Retention periods (PRD §32.4, pending OQ-03). The cleanup runs every 6 hours |
 | `Push__*` | VAPID keys for Web Push |
+| `Proxy__TrustAll`, `Proxy__TrustedProxies__0` | Trust X-Forwarded-For/Proto from the reverse proxy so rate limits and audit logs see real client addresses |
+
+Data Protection keys (they protect stored authenticator secrets) are kept in the `DataProtectionKeys` table, so they
+survive restarts. The full list of settings is in [docs/deployment.md](docs/deployment.md#7-configuration-reference).
 
 `Otp:ExposeCodeInResponse` only takes effect in the Development environment.
 

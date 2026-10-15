@@ -21,7 +21,7 @@ public sealed class QueueHub(ClinicAccess clinicAccess, PatientAccess patientAcc
         var allowed = await clinicAccess.CanOperateSessionAsync(userId, sessionId, Context.ConnectionAborted)
                       || await (await patientAccess.VisibleAppointmentsAsync(userId, Context.ConnectionAborted))
                           .AnyAsync(a => a.QueueSessionId == sessionId, Context.ConnectionAborted);
-        if (!allowed) throw new HubException("You cannot follow this queue.");
+        if (!allowed) throw new HubException("You cannot follow these appointments.");
         await Groups.AddToGroupAsync(Context.ConnectionId, Group(sessionId));
     }
 

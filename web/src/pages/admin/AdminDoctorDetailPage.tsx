@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api, ApiError, errorMessage } from '../../api/client'
 import {
@@ -7,6 +7,7 @@ import {
 import { FormAlert, SelectField, TextAreaField, TextField } from '../../components/Fields'
 import { useApi } from '../../api/useApi'
 import { Loading } from '../../components/Layout'
+import { useModalDialog } from '../../components/useModalDialog'
 import { formatDate } from '../../format'
 
 type Action = 'verify' | 'reject' | 'suspend' | 'reinstate' | 'deactivate'
@@ -40,8 +41,8 @@ export function AdminDoctorDetailPage() {
 
   return (
     <section className="panel">
-      <title>{`Review ${d.fullName} · Smart Doctor Queue`}</title>
-      <p><Link to="/admin/doctors">← Back to verification queue</Link></p>
+      <title>{`Review ${d.fullName} · Valmedo`}</title>
+      <p><Link to="/admin/doctors">← Back to doctor verification</Link></p>
       <header className="profile-header">
         <div>
           <h1>{d.fullName}</h1>
@@ -157,17 +158,11 @@ function ActionDialog({
   onDone: (message: string) => void
   onConflict: () => void
 }) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const dialogRef = useModalDialog()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
   const copy = actionCopy[action]
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-    dialog?.showModal()
-    return () => dialog?.close()
-  }, [])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()

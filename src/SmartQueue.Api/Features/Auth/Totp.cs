@@ -39,7 +39,7 @@ public static class Totp
     }
 
     public static string OtpAuthUri(string base32Secret, string accountLabel) =>
-        $"otpauth://totp/{Uri.EscapeDataString("Smart Doctor Queue:" + accountLabel)}?secret={base32Secret}&issuer=Smart%20Doctor%20Queue&algorithm=SHA1&digits=6&period=30";
+        $"otpauth://totp/{Uri.EscapeDataString("Valmedo:" + accountLabel)}?secret={base32Secret}&issuer=Valmedo&algorithm=SHA1&digits=6&period=30";
 }
 
 public static class Base32

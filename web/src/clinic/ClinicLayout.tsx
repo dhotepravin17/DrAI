@@ -45,7 +45,7 @@ export function ClinicLayout() {
   if (!scope) {
     return (
       <section className="panel narrow">
-        <title>Clinic · Smart Doctor Queue</title>
+        <title>Clinic · Valmedo</title>
         <h1>No clinic yet</h1>
         {me?.doctor ? (
           <p>Your doctor registration is {me.doctor.status === 'Verified' ? 'verified' : 'not verified yet'}. The clinic tools open once you are verified.</p>
@@ -73,12 +73,13 @@ export function ClinicLayout() {
         </div>
         <nav aria-label="Clinic">
           <ul className="tabs">
-            <li><NavLink className="tab" to="/clinic" end>Queue</NavLink></li>
+            <li><NavLink className="tab" to="/clinic" end>Appointments</NavLink></li>
             <li><NavLink className="tab" to="/clinic/schedule">Schedule</NavLink></li>
-            <li><NavLink className="tab" to="/clinic/announcements">Announcements</NavLink></li>
+            <li><NavLink className="tab" to="/clinic/announcements">Notices &amp; leave</NavLink></li>
             <li><NavLink className="tab" to="/clinic/history">History</NavLink></li>
             <li><NavLink className="tab" to="/clinic/reports">Reports</NavLink></li>
             {isDoctor && <li><NavLink className="tab" to="/clinic/staff">Staff</NavLink></li>}
+            {isDoctor && <li><NavLink className="tab" to="/clinic/profile">Profile &amp; QR</NavLink></li>}
           </ul>
         </nav>
       </div>

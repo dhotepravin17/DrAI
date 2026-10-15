@@ -10,21 +10,21 @@ export function RegisterChoicePage() {
 
   return (
     <section className="panel narrow">
-      <title>Register · Smart Doctor Queue</title>
+      <title>Register · Valmedo</title>
       <h1>Create an account</h1>
-      <p className="lead">Choose how you will use Smart Doctor Queue.</p>
+      <p className="lead">Choose how you will use Valmedo.</p>
       <ul className="role-choice-list">
         <li>
           <Link to="/register/patient" className="role-choice">
             <span className="role-choice-title">I'm a patient</span>
-            <span className="role-choice-text">Book tokens for yourself and your family, and follow the queue live.</span>
+            <span className="role-choice-text">Book tokens for yourself and your family, and follow your turn live.</span>
           </Link>
         </li>
         <li>
           <Link to="/register/doctor" className="role-choice">
             <span className="role-choice-title">I'm a doctor</span>
             <span className="role-choice-text">
-              Register with your Medical Registration ID. After verification you get a Doctor ID and your clinic queue.
+              Register with your Medical Registration ID. After verification you get a Doctor ID and your clinic appointments.
             </span>
           </Link>
         </li>
@@ -39,7 +39,7 @@ export function PatientRegisterPage() {
   const navigate = useNavigate()
   return (
     <section className="panel narrow">
-      <title>Patient registration · Smart Doctor Queue</title>
+      <title>Patient registration · Valmedo</title>
       <PhoneAuthFlow mode="patient" onDone={async (token) => navigate(await landingPath(token), { replace: true })} />
       <p className="meta">Are you a doctor? <Link to="/register/doctor">Register as a doctor</Link></p>
     </section>
@@ -54,7 +54,7 @@ export function DoctorRegisterPage() {
 
   return (
     <section className="panel narrow">
-      <title>Doctor registration · Smart Doctor Queue</title>
+      <title>Doctor registration · Valmedo</title>
       <PhoneAuthFlow mode="doctor" onDone={(t) => navigate(t.roles.includes('SuperAdmin') ? '/admin' : '/doctor/register', { replace: true })} />
       <p className="meta">Booking as a patient? <Link to="/register/patient">Create a patient account</Link></p>
     </section>

@@ -16,7 +16,7 @@ function headline(s: LiveStatus): { text: string; tone: string } {
       return { text: "It's your turn. Please go to the doctor's cabin.", tone: 'success' }
     case 'Missed':
       return {
-        text: `You missed your turn. You will be placed back in the queue after ${s.requeueAfterCompletions ?? 0} more patient(s).`,
+        text: `You missed your turn. You will be placed back in the appointment list after ${s.requeueAfterCompletions ?? 0} more patient(s).`,
         tone: 'warning',
       }
     case 'Completed':
@@ -37,7 +37,7 @@ export function AppointmentsPage() {
 
   return (
     <section className="stack">
-      <title>My appointments · Smart Doctor Queue</title>
+      <title>My appointments · Valmedo</title>
       <h1>My appointments</h1>
       {error ? <p className="alert alert-error" role="alert">{errorMessage(error)}</p> : null}
       {loading && !data && <Loading />}
@@ -91,7 +91,7 @@ export function AppointmentPage() {
 
   return (
     <section className="stack">
-      <title>{`${data.token} · Smart Doctor Queue`}</title>
+      <title>{`${data.token} · Valmedo`}</title>
       {justBooked && <p className="alert alert-success" role="status">Booked. Keep this page open or turn on alerts to know when your turn is near.</p>}
       <div className="panel live-card" aria-live="polite">
         <p className="meta">{data.doctorName} · {formatDay(data.date)} · {data.sessionName}</p>
@@ -136,7 +136,7 @@ export function AppointmentPage() {
             await api(`/appointments/${id}/cancel`, { method: 'POST' })
             reload()
           }}>
-          {() => <p>{data.patientName}'s place in the queue will be released. Cancelled tokens are not reused.</p>}
+          {() => <p>{data.patientName}'s appointment will be released. Cancelled tokens are not reused.</p>}
         </ModalForm>
       )}
     </section>

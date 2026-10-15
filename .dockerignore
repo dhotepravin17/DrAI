@@ -1,0 +1,16 @@
+.git
+.github
+.claude
+.vs
+.vscode
+**/bin
+**/obj
+**/node_modules
+web/dist
+tests
+docs
+deploy
+scripts
+**/*.user
+**/vapid-keys.dev.json
+**/appsettings.Development.json

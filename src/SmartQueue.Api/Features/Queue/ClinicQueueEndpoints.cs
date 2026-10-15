@@ -102,7 +102,7 @@ public static class ClinicQueueEndpoints
     private static async Task EnsureOwnSession(AppDbContext db, ClinicActor actor, Guid sessionId, CancellationToken ct)
     {
         if (!await db.QueueSessions.AnyAsync(s => s.Id == sessionId && s.DoctorId == actor.Doctor.Id, ct))
-            throw ApiException.NotFound("Queue session not found.");
+            throw ApiException.NotFound("Appointment session not found.");
     }
 
     private static async Task<IResult> Sessions(

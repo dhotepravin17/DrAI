@@ -84,8 +84,8 @@ export function BookPage() {
 
   return (
     <section className="panel narrow">
-      <title>Join queue · Smart Doctor Queue</title>
-      <h1>Join the queue</h1>
+      <title>Book appointment · Valmedo</title>
+      <h1>Book an appointment</h1>
       <dl className="details compact">
         <div><dt>Doctor</dt><dd>{doctor.data.fullName}</dd></div>
         <div><dt>When</dt><dd>{formatDay(date)}, {session.name} ({formatTime(session.startsAt)} – {formatTime(session.endsAt)})</dd></div>

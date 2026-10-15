@@ -1,4 +1,4 @@
-# Smart Doctor Queue – Manual testing guide
+# Valmedo – Manual testing guide
 
 ## Before you start
 
@@ -15,14 +15,12 @@
 
 ## 1. Super Admin setup (Window A)
 
-1. Sign in with mobile number **9000000001**.
-2. You are asked for an authenticator code.
-   - Install Google Authenticator or Microsoft Authenticator on your phone.
-   - Scan the code shown on screen, or type in the secret.
-   - Enter the 6-digit code from the app.
-3. You land on the **Admin overview**. Check that the menu shows: **Overview, Doctors, Patients, Queues, Failures, Analytics, Audit, Cities**.
+1. Sign in with mobile number **9000000001** and the code shown on screen.
+2. In development there is no authenticator step. (Production asks for an authenticator app code after the phone code;
+   see `Auth__AdminMfaRequired` in the README.)
+3. You land on the **Admin overview**. Check that the menu shows: **Overview, Doctors, Patients, Appointments, Failures, Analytics, Audit, Cities**.
 
-Where each role lands after signing in: Super Admin → Admin overview; verified doctor or receptionist → Clinic queue;
+Where each role lands after signing in: Super Admin → Admin overview; verified doctor or receptionist → Clinic appointments;
 doctor waiting for verification → registration status; patient → Appointments. If you were sent to sign in from a
 protected page, you go back to that page instead.
 
@@ -42,13 +40,20 @@ protected page, you go back to that page instead.
 5. Go to **Window A**: Admin → **Doctors**. The new doctor is waiting for verification.
    - Open the doctor and click **Verify**.
    - Note the Doctor ID that is issued, for example `NGP-Dr-0001`.
-6. Back in **Window B**, sign out and sign in again with 9876500001. You now land on the **Clinic** queue.
+6. Back in **Window B**, sign out and sign in again with 9876500001. You now land on **Clinic → Appointments**.
    - The doctor's menu shows only doctor items: **Clinic** (or **Registration** before verification), **Alerts** and
      **Sign out**. Patient pages such as Appointments, Family or Account send the doctor back to the clinic.
    - A patient's menu (section 3) has no "Register as a doctor" link.
-7. Go to Clinic → **Schedule**:
-   - Add a **Morning** session for today's weekday, for example 08:00–14:00, capacity 20.
-   - Save.
+7. The Appointments page shows **Finish setting up your clinic**. Until hours are set, patients see "This doctor has not
+   published clinic hours yet" on the doctor's profile and cannot book appointments.
+8. Click **Set your weekly clinic hours** (or the **Schedule** tab):
+   - Click **Add session**, choose today's weekday, for example 08:00–14:00, capacity 20. Use **Copy Monday to Tue–Sat**
+     to repeat a day.
+   - Click **Save weekly hours**. The checklist disappears and the profile now lists sessions.
+   - On the same page, **Holidays and special hours** closes a date or sets different hours for one date.
+9. **Notices & leave** tab: post an **Out of clinic**, **Leave**, **Holiday**, **Delayed opening** or other notice.
+   It appears as a banner on the doctor's profile. Closing notices cancel and notify bookings in that period.
+10. **Profile & QR** tab: copy the public profile link, or click **Print QR poster** for the front desk.
 
 ---
 
@@ -57,27 +62,28 @@ protected page, you go back to that page instead.
 1. Click **Register**, then **I'm a patient** (or **Register as a patient** on the home page).
    Enter **9876500002**, the code, and your name. You land on **Appointments**.
 2. Go to **Family** and add a child (enter a date of birth and confirm you are the guardian).
-3. Search for the doctor by Doctor ID or name, open the profile and click **Book**.
+3. **Find a doctor** lists all doctors straight away. Narrow it with a name, Doctor ID, city or specialty, or leave
+   "All cities" / "All specialties" to see everyone. Open the profile and click **Book appointment**.
    - Choose today's **Morning** session.
    - Choose who the appointment is for: yourself or the child.
 4. Open **Appointments**. You should see:
    - The token, for example `T-001`
-   - Your position in the queue
+   - Your position in the line (patients ahead of you)
    - The estimated waiting time
 
 ---
 
-## 4. Running the queue (Window B, with Window C open beside it)
+## 4. Running appointments (Window B, with Window C open beside it)
 
-1. Go to Clinic → **Queue**.
+1. Go to Clinic → **Appointments**.
 2. Add 3 walk-ins: `Walk A`, `Walk B`, `Walk C`.
 3. Click **Call next**.
    - In Window C, the patient gets a "Your turn is near" or "It's your turn" alert.
-   - Their queue position updates live, without refreshing.
+   - Their position updates live, without refreshing.
 4. Click **Complete**, then call the next patient.
-5. **Emergency:** mark a waiting patient as an emergency and choose a reason. They move to the front of the queue.
+5. **Emergency:** mark a waiting patient as an emergency and choose a reason. They move to the front of the list.
 6. **Missed turn:** call a patient, wait out the 3-minute grace period, then mark them **Missed**.
-   - After 5 more patients are completed (or as soon as nobody else is waiting) they are put back in the queue.
+   - After 5 more patients are completed (or as soon as nobody else is waiting) they are put back in the appointment list.
 
 ---
 
@@ -86,7 +92,7 @@ protected page, you go back to that page instead.
 1. In Window B, go to Clinic → **Staff** and invite mobile **9876500003**.
 2. Open a fresh window, sign in as **9876500003**, go to **Account** and accept the invitation.
 3. Check that the receptionist:
-   - **can** run the Queue
+   - **can** run Appointments
    - **cannot** save changes to the Schedule (it is refused)
    - has **no** Staff tab
 4. On the Free plan, inviting a **second** staff member is refused.
@@ -105,25 +111,25 @@ protected page, you go back to that page instead.
 ## 7. The code-review fixes
 
 - **Closing while a patient is being seen**
-  - With a patient called or in consultation, post a **Clinic closure** announcement.
-  - Expected: refused with the patient's token; the queue stays open.
+  - With a patient called or in consultation, post a **Clinic closure** notice on the **Notices & leave** tab.
+  - Expected: refused with the patient's token; appointments stay open.
 
 - **Removing one delay keeps the others**
-  - Post two **Delayed opening** announcements for today: 30 minutes and 45 minutes.
+  - Post two **Delayed opening** notices for today: 30 minutes and 45 minutes.
   - The patient's estimate grows by 45 minutes.
   - Remove the 45-minute one. Expected: the delay drops to 30, not 0.
 
 - **Overlapping closures**
-  - Close tomorrow from the **Schedule** page, and also post a **Leave** announcement covering tomorrow.
+  - Close tomorrow from the **Schedule** page, and also post a **Leave** notice covering tomorrow.
   - Remove only one of them. Expected: tomorrow still cannot be booked.
 
 - **Walk-in validation**
   - Add a walk-in marked as an emergency without choosing a reason.
   - Expected: refused, and no stray patient record is created (check the patient list).
 
-- **Admin authenticator lockout** (do this one last)
-  - In a fresh window, sign in as 9000000001 and enter 5 wrong authenticator codes.
-  - Expected: "Too many incorrect authenticator codes … try again in 15 minutes". Even the correct code is refused until then.
+- **Admin authenticator lockout**
+  - Only applies when the authenticator step is on (production). It is off in development, so this is covered by the
+    automated tests (`dotnet test`) rather than by hand.
 
 ---
 
@@ -131,7 +137,7 @@ protected page, you go back to that page instead.
 
 - **Analytics:** bookings, share booked online, wait and consultation times.
 - **Patients:** search for a patient and open their history. You must enter a reason, and the access then appears under **Audit**.
-- **Queues:** today's live queues.
+- **Appointments:** today's live appointment sessions.
 - **Failures:** notifications that could not be delivered.
 
 ---

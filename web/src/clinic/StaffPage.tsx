@@ -42,9 +42,9 @@ export function StaffPage() {
 
   return (
     <section className="stack">
-      <title>Staff · Smart Doctor Queue</title>
+      <title>Staff · Valmedo</title>
       <h1>Clinic staff</h1>
-      <p className="lead">Receptionists can add walk-ins, check patients in and run the queue. They cannot change your schedule or staff.</p>
+      <p className="lead">Receptionists can add walk-ins, check patients in and manage appointments. They cannot change your schedule or staff.</p>
       <FormAlert message={error} />
       {staff.loading && !staff.data && <Loading />}
       {staff.data && (

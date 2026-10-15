@@ -79,7 +79,7 @@ public static class StaffEndpoints
         var recipients = await db.Users.Where(u => u.MobileNumber == mobile && u.IsActive).Select(u => u.Id).ToListAsync(ct);
         await outbox.EnqueueAsync(NotificationEvents.StaffInvitation, $"staff:{invitation.Id}", new NotificationPayload(
             recipients, recipients.Count == 0 ? mobile : null, "Clinic staff invitation",
-            $"{actor.Doctor.FullName} invited you to manage their clinic queue. Sign in to accept.", null, "/account"), ct);
+            $"{actor.Doctor.FullName} invited you to manage their clinic appointments. Sign in to accept.", null, "/account"), ct);
         audit.Record("InviteStaff", "Doctor", actor.Doctor.Id.ToString(), details: MobileNumber.Mask(mobile));
         await db.SaveChangesAsync(ct);
         return Results.Ok(await Load(db, actor.Doctor.Id, ct));

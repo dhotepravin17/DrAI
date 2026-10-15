@@ -483,3 +483,8 @@ $RECYCLE.BIN/
 
 # Generated development Web Push keys
 vapid-keys.dev.json
+
+# Deployment: secrets, backups and the web app copied into the API by the Docker build
+deploy/vps/.env
+deploy/vps/backups/
+src/SmartQueue.Api/wwwroot/

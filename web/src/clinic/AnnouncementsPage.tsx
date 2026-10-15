@@ -62,12 +62,16 @@ export function AnnouncementsPage() {
 
   return (
     <section className="stack">
-      <title>Announcements · Smart Doctor Queue</title>
-      <h1>Announcements</h1>
+      <title>Notices and leave · Valmedo</title>
+      <h1>Notices and leave</h1>
+      <p className="lead">
+        Tell patients when you are out of the clinic, on leave, closed for a holiday, opening late or working changed hours.
+        The notice appears as a banner on your profile and on patients' appointments. Closures cancel and notify affected bookings.
+      </p>
       {message && <p className="alert alert-success" role="status">{message}</p>}
 
       <form key={formKey} className="panel" onSubmit={publish}>
-        <h2>Publish an announcement</h2>
+        <h2>Post a notice</h2>
         <FormAlert message={error} />
         <SelectField name="type" label="Type" value={type} onChange={(e) => setType(e.target.value as AnnouncementType)}
           options={types.map((t) => ({ value: t, label: announcementLabels[t] }))} errors={fieldErrors.type} />

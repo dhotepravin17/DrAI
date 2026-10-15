@@ -80,6 +80,9 @@ export function loadReference(): Promise<ReferenceData> {
 }
 
 export function errorMessage(error: unknown): string {
+  // The rate limiter answers with a bare 429, which would otherwise show as "Too Many Requests".
+  if (error instanceof ApiError && error.status === 429 && !error.detail && /too many requests/i.test(error.message))
+    return 'Too many attempts. Please wait a minute and try again.'
   if (error instanceof ApiError) return error.detail ? `${error.message} ${error.detail}` : error.message
   return 'Something went wrong. Check your connection and try again.'
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using SmartQueue.Api.Domain;
 using SmartQueue.Api.Features.Auth;
@@ -177,5 +178,29 @@ public class ReviewFixTests(ApiFactory factory)
         Assert.Equal(HttpStatusCode.OK, (await TryAsync(code)).StatusCode);
         Assert.Equal(0, await factory.WithDbAsync(db => db.Users.Where(u => u.MobileNumber == "+91" + mobile)
             .Select(u => u.TotpFailedAttempts).SingleAsync()));
+    }
+
+    [Fact]
+    public async Task Super_admin_signs_in_with_the_phone_code_alone_when_the_authenticator_step_is_off()
+    {
+        var mobile = TestApi.NextMobile();
+        var userId = await factory.WithDbAsync(async db =>
+        {
+            var user = new User { MobileNumber = "+91" + mobile, FullName = "Phone Only Admin", CreatedAt = factory.Clock.GetUtcNow() };
+            db.Users.Add(user);
+            db.UserRoleAssignments.Add(new UserRoleAssignment { UserId = user.Id, Role = RoleName.SuperAdmin, GrantedAt = user.CreatedAt });
+            await db.SaveChangesAsync();
+            return user.Id;
+        });
+        var ticket = await _api.VerifyPhoneAsync(mobile);
+
+        await using var withoutMfa = factory.WithWebHostBuilder(b => b.UseSetting("Auth:AdminMfaRequired", "false"));
+        var response = await withoutMfa.CreateClient().PostAsJsonAsync("/api/v1/auth/session", new { phoneTicket = ticket, userId });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var token = await response.JsonAsync();
+        Assert.Contains("SuperAdmin", token.GetProperty("roles").EnumerateArray().Select(r => r.GetString()));
+        Assert.True(await factory.WithDbAsync(db => db.AdminAuditLogs.AnyAsync(a =>
+            a.Action == "AdminSignIn" && a.EntityId == userId.ToString() && a.Details == "Without authenticator step")));
     }
 }

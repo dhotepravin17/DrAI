@@ -13,7 +13,7 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
     <ul className="notice-list" aria-label="Clinic notices">
       {notices.map((n) => (
         <li key={`${n.type}-${n.startsAt}-${n.message}`} className="alert alert-warning">
-          <strong>{announcementLabels[n.type as AnnouncementType] ?? (n.type === 'QueuePaused' ? 'Queue paused' : n.type)}:</strong>{' '}
+          <strong>{announcementLabels[n.type as AnnouncementType] ?? (n.type === 'QueuePaused' ? 'Appointments paused' : n.type)}:</strong>{' '}
           {n.message}
           {n.endsAt && <span className="hint"> (until {formatDay(n.endsAt.slice(0, 10))} {formatTime(n.endsAt)})</span>}
         </li>
@@ -32,7 +32,7 @@ export function DoctorProfilePage() {
     const missing = error instanceof ApiError && error.status === 404
     return (
       <section className="panel">
-        <title>Doctor not found · Smart Doctor Queue</title>
+        <title>Doctor not found · Valmedo</title>
         <h1>{missing ? 'Doctor not found' : 'Could not load this doctor'}</h1>
         <p>{missing ? `No active doctor has the ID ${code}. The doctor may not be verified yet.` : errorMessage(error)}</p>
         <Link to="/" className="button">Back to search</Link>
@@ -45,7 +45,7 @@ export function DoctorProfilePage() {
 
   return (
     <article className="stack">
-      <title>{`${doctor.fullName} · Smart Doctor Queue`}</title>
+      <title>{`${doctor.fullName} · Valmedo`}</title>
       <section className="panel profile">
         <header className="profile-header">
           <div>
@@ -82,7 +82,7 @@ export function DoctorProfilePage() {
 
       {today && today.sessions.some((s) => s.nowServing || s.waiting !== null) && (
         <section className="panel">
-          <h2>Today's queue</h2>
+          <h2>Today's appointments</h2>
           <ul className="session-grid">
             {today.sessions.filter((s) => s.waiting !== null).map((s) => (
               <li key={s.name} className="session-tile">
@@ -96,7 +96,7 @@ export function DoctorProfilePage() {
       )}
 
       <section className="panel">
-        <h2>Join the queue</h2>
+        <h2>Book an appointment</h2>
         {availability.loading && !availability.data && <Loading />}
         {availability.error ? <p className="alert alert-error">{errorMessage(availability.error)}</p> : null}
         {days.length === 0 && availability.data && <p>This doctor has not published clinic hours yet.</p>}
@@ -113,7 +113,7 @@ export function DoctorProfilePage() {
                       <>
                         <span className="hint">{s.remaining} of {s.capacity} places left</span>
                         <Link className="button primary small" to={`/doctors/${doctor.doctorCode}/book?date=${day.date}&session=${encodeURIComponent(s.name)}`}>
-                          Join queue
+                          Book appointment
                         </Link>
                       </>
                     ) : (

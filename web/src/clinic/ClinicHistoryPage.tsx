@@ -39,7 +39,7 @@ export function ClinicHistoryPage() {
 
   return (
     <section className="stack">
-      <title>History · Smart Doctor Queue</title>
+      <title>History · Valmedo</title>
       <h1>Appointment history</h1>
       <form className="panel filter-form" key={params.toString()} onSubmit={(e) => { e.preventDefault(); apply(e.currentTarget) }}>
         <label>From <input type="date" name="from" defaultValue={params.get('from') ?? ''} /></label>

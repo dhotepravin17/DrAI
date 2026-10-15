@@ -17,14 +17,14 @@ export function AdminOverviewPage() {
   const tiles: [string, number | undefined, string][] = [
     ['Doctors awaiting verification', data?.pendingDoctors, '/admin/doctors'],
     ['Verified doctors', data?.verifiedDoctors, '/admin/doctors?status=Verified'],
-    ['Queues open now', data?.openQueuesToday, '/admin/queues'],
+    ['Appointment sessions open now', data?.openQueuesToday, '/admin/queues'],
     ['Appointments today', data?.appointmentsToday, '/admin/queues'],
     ['Notification failures (24 h)', data?.notificationFailures24h, '/admin/notifications'],
     ['Notifications waiting to send', data?.outboxBacklog, '/admin/notifications'],
   ]
   return (
     <section className="stack">
-      <title>Platform overview · Smart Doctor Queue</title>
+      <title>Platform overview · Valmedo</title>
       <h1>Platform overview</h1>
       {error ? <p className="alert alert-error">{errorMessage(error)}</p> : null}
       <ul className="stat-grid">
@@ -56,7 +56,7 @@ export function AdminPatientsPage() {
 
   return (
     <section className="stack">
-      <title>Patients · Smart Doctor Queue</title>
+      <title>Patients · Valmedo</title>
       <h1>Patients</h1>
       <form role="search" className="inline-search" onSubmit={search} key={q}>
         <label htmlFor="patient-q" className="visually-hidden">Search patients</label>
@@ -138,9 +138,9 @@ export function AdminQueuesPage() {
   const { data, error, loading, reload } = useApi<AdminQueueRow[]>(`/admin/queues?date=${date}`)
   return (
     <section className="stack">
-      <title>Queues · Smart Doctor Queue</title>
+      <title>Appointments · Valmedo</title>
       <div className="page-head">
-        <h1>Queues</h1>
+        <h1>Appointments</h1>
         <div className="inline-field">
           <input type="date" aria-label="Date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} />
           <button type="button" className="button small" onClick={reload}>Refresh</button>
@@ -177,7 +177,7 @@ export function AdminNotificationsPage() {
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1
   return (
     <section className="stack">
-      <title>Notification failures · Smart Doctor Queue</title>
+      <title>Notification failures · Valmedo</title>
       <h1>Notification failures</h1>
       {error ? <p className="alert alert-error">{errorMessage(error)}</p> : null}
       {loading && !data && <Loading />}
@@ -221,7 +221,7 @@ export function AdminAuditPage() {
 
   return (
     <section className="stack">
-      <title>Audit log · Smart Doctor Queue</title>
+      <title>Audit log · Valmedo</title>
       <h1>Audit log</h1>
       <form className="inline-search" key={params.toString()} onSubmit={(e) => {
         e.preventDefault()

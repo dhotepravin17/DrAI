@@ -29,7 +29,7 @@ export function SignInPage() {
 
   return (
     <section className="panel narrow">
-      <title>Sign in · Smart Doctor Queue</title>
+      <title>Sign in · Valmedo</title>
       <PhoneAuthFlow mode="signin" onDone={async (token) => navigate(next ?? await landingPath(token), { replace: true })} />
       <p className="meta">New here? <Link to="/register">Register as a patient or a doctor</Link></p>
     </section>
@@ -104,7 +104,7 @@ const copy: Record<PhoneAuthMode, { step: string | null; mobileTitle: string; mo
   patient: {
     step: null,
     mobileTitle: 'Create your patient account',
-    mobileLead: 'Book tokens for yourself and your family and follow the queue live. We will send a 6-digit code to your mobile number.',
+    mobileLead: 'Book tokens for yourself and your family and follow your turn live. We will send a 6-digit code to your mobile number.',
     accountsTitle: 'You already have an account on this number',
     createTitle: 'Your details',
     createLead: 'Only your name is required. You can add family members later.',
