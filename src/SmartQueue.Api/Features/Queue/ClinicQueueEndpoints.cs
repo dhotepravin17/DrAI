@@ -184,6 +184,11 @@ public static class ClinicQueueEndpoints
         var now = clock.GetUtcNow();
         var today = ClinicTime.Today(clock);
 
+        // Validate everything before creating a patient record, so a rejected request leaves nothing behind.
+        if (request.Emergency is { Reason: null })
+            return new Validator().Add("emergency.reason", "Choose a reason for emergency priority.").ToResult();
+        var emergencyNote = LimitNote(request.Emergency?.Note);
+
         Patient patient;
         if (request.PatientId is { } existingId)
         {
@@ -211,17 +216,14 @@ public static class ClinicQueueEndpoints
                 CreatedByUserId = actor.UserId,
                 CreatedAt = now,
             };
+            // Saved by the queue engine in the same transaction as the booking: if booking fails, no patient is created.
             db.Patients.Add(patient);
-            await db.SaveChangesAsync(ct);
         }
-
-        if (request.Emergency is { Reason: null })
-            return new Validator().Add("emergency.reason", "Choose a reason for emergency priority.").ToResult();
 
         await engine.RunAsync(id, actor.UserId, async scope =>
         {
             var source = scope.Session.Date == today ? BookingSource.WalkIn : BookingSource.StaffBooked;
-            await scope.BookAsync(patient, actor.UserId, source, ct, request.Emergency?.Reason, LimitNote(request.Emergency?.Note));
+            await scope.BookAsync(patient, actor.UserId, source, ct, request.Emergency?.Reason, emergencyNote);
             return true;
         }, ct);
         return await View(id, actor.Doctor.Id, http, access, db, status, clock, ct);

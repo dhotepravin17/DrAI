@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
 import { api, ApiError, errorMessage } from '../api/client'
 import type { StaffInvitationReceived } from '../api/queueTypes'
 import { useApi } from '../api/useApi'
@@ -115,7 +114,6 @@ export function AccountPage() {
         <p>Download a copy of the personal data held for your account, including family profiles and appointments.</p>
         <div className="actions">
           <button type="button" className="button" onClick={() => void exportData()}>Download my data</button>
-          {!me.doctor && <Link className="button" to="/doctor/register">Register as a doctor</Link>}
           <button type="button" className="button" onClick={signOut}>Sign out</button>
         </div>
       </div>

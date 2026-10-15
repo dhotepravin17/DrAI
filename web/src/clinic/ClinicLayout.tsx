@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import { errorMessage } from '../api/client'
 import type { ClinicContextDto } from '../api/queueTypes'
 import { useApi } from '../api/useApi'
@@ -50,7 +50,7 @@ export function ClinicLayout() {
         {me?.doctor ? (
           <p>Your doctor registration is {me.doctor.status === 'Verified' ? 'verified' : 'not verified yet'}. The clinic tools open once you are verified.</p>
         ) : (
-          <p>Clinic tools are for verified doctors and the staff they invite. <Link to="/doctor/register">Register as a doctor</Link>, or ask your doctor to invite you.</p>
+          <p>Clinic tools are for verified doctors and the staff they invite. If you work at a clinic, ask the doctor to invite your mobile number.</p>
         )}
       </section>
     )

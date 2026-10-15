@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { api, ApiError, errorMessage, loadReference } from '../api/client'
 import type { AccountSummary, OtpRequestResponse, OtpVerifyResponse, ReferenceData, TokenResponse } from '../api/types'
 import type { MfaChallenge } from '../api/queueTypes'
 import { useAuth } from '../auth/authState'
+import { landingPath } from '../auth/landing'
 import { FormAlert, TextField } from '../components/Fields'
 import { clearFieldErrorOnInput } from '../format'
 
@@ -14,26 +15,46 @@ type Step =
   | { kind: 'create'; ticket: string; canGoBack: boolean; accounts: AccountSummary[] }
   | { kind: 'mfa'; challenge: MfaChallenge }
 
-function safeNext(value: string | null): string {
-  return value && value.startsWith('/') && !value.startsWith('//') ? value : '/'
+/** Sign-in, patient registration and step 1 of doctor registration share the phone and code steps. */
+export type PhoneAuthMode = 'signin' | 'patient' | 'doctor'
+
+function safeNext(value: string | null): string | null {
+  return value && value.startsWith('/') && !value.startsWith('//') ? value : null
 }
 
 export function SignInPage() {
-  const [step, setStep] = useState<Step>({ kind: 'mobile' })
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const { signIn } = useAuth()
-
-  const finish = (token: TokenResponse) => {
-    signIn(token.accessToken)
-    navigate(safeNext(params.get('next')), { replace: true })
-  }
+  const next = safeNext(params.get('next'))
 
   return (
     <section className="panel narrow">
       <title>Sign in · Smart Doctor Queue</title>
+      <PhoneAuthFlow mode="signin" onDone={async (token) => navigate(next ?? await landingPath(token), { replace: true })} />
+      <p className="meta">New here? <Link to="/register">Register as a patient or a doctor</Link></p>
+    </section>
+  )
+}
+
+/** Runs the phone, code, account and authenticator steps, signs the person in, then calls `onDone`. */
+export function PhoneAuthFlow({
+  mode, onDone,
+}: {
+  mode: PhoneAuthMode
+  onDone: (token: TokenResponse) => void | Promise<void>
+}) {
+  const [step, setStep] = useState<Step>({ kind: 'mobile' })
+  const { signIn } = useAuth()
+
+  const finish = (token: TokenResponse) => {
+    signIn(token.accessToken)
+    void onDone(token)
+  }
+
+  return (
+    <>
       {step.kind === 'mobile' && (
-        <MobileStep onSent={(mobile, developmentCode) => setStep({ kind: 'code', mobile, developmentCode })} />
+        <MobileStep mode={mode} onSent={(mobile, developmentCode) => setStep({ kind: 'code', mobile, developmentCode })} />
       )}
       {step.kind === 'code' && (
         <CodeStep
@@ -48,6 +69,7 @@ export function SignInPage() {
       )}
       {step.kind === 'accounts' && (
         <AccountStep
+          mode={mode}
           ticket={step.ticket}
           accounts={step.accounts}
           onCreate={() => setStep({ kind: 'create', ticket: step.ticket, canGoBack: true, accounts: step.accounts })}
@@ -60,16 +82,48 @@ export function SignInPage() {
       )}
       {step.kind === 'create' && (
         <CreateAccountStep
+          mode={mode}
           ticket={step.ticket}
           onBack={step.canGoBack ? () => setStep({ kind: 'accounts', ticket: step.ticket, accounts: step.accounts }) : undefined}
           onCreated={finish}
         />
       )}
-    </section>
+    </>
   )
 }
 
-function MobileStep({ onSent }: { onSent: (mobile: string, developmentCode: string | null) => void }) {
+const copy: Record<PhoneAuthMode, { step: string | null; mobileTitle: string; mobileLead: string; accountsTitle: string; createTitle: string; createLead: string }> = {
+  signin: {
+    step: null,
+    mobileTitle: 'Sign in or create an account',
+    mobileLead: 'We will send a 6-digit code to your mobile number.',
+    accountsTitle: 'Choose an account',
+    createTitle: 'Create your account',
+    createLead: 'Only your name is required. You can add family members later.',
+  },
+  patient: {
+    step: null,
+    mobileTitle: 'Create your patient account',
+    mobileLead: 'Book tokens for yourself and your family and follow the queue live. We will send a 6-digit code to your mobile number.',
+    accountsTitle: 'You already have an account on this number',
+    createTitle: 'Your details',
+    createLead: 'Only your name is required. You can add family members later.',
+  },
+  doctor: {
+    step: 'Step 1 of 2 · Your account',
+    mobileTitle: 'Register as a doctor',
+    mobileLead: 'First create your account with your mobile number. Your professional details and Medical Registration ID come next.',
+    accountsTitle: 'You already have an account on this number',
+    createTitle: 'Your account',
+    createLead: 'Enter your name as it appears on your medical registration.',
+  },
+}
+
+function StepLabel({ mode }: { mode: PhoneAuthMode }) {
+  return copy[mode].step ? <p className="meta step-label">{copy[mode].step}</p> : null
+}
+
+function MobileStep({ mode, onSent }: { mode: PhoneAuthMode; onSent: (mobile: string, developmentCode: string | null) => void }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -90,8 +144,9 @@ function MobileStep({ onSent }: { onSent: (mobile: string, developmentCode: stri
 
   return (
     <form method="post" onSubmit={handleSubmit}>
-      <h1>Sign in or create an account</h1>
-      <p className="lead">We will send a 6-digit code to your mobile number.</p>
+      <StepLabel mode={mode} />
+      <h1>{copy[mode].mobileTitle}</h1>
+      <p className="lead">{copy[mode].mobileLead}</p>
       <FormAlert message={error} />
       <TextField
         name="mobileNumber"
@@ -259,8 +314,9 @@ function MfaStep({
 }
 
 function AccountStep({
-  ticket, accounts, onCreate, onSignedIn, onMfa,
+  mode, ticket, accounts, onCreate, onSignedIn, onMfa,
 }: {
+  mode: PhoneAuthMode
   ticket: string
   accounts: AccountSummary[]
   onCreate: () => void
@@ -285,8 +341,15 @@ function AccountStep({
 
   return (
     <div>
-      <h1>Choose an account</h1>
-      <p className="lead">This number is used by more than one person in your family, or by one account.</p>
+      <StepLabel mode={mode} />
+      <h1>{copy[mode].accountsTitle}</h1>
+      <p className="lead">
+        {mode === 'signin'
+          ? 'This number is used by more than one person in your family, or by one account.'
+          : mode === 'doctor'
+            ? 'Continue with your account to add your professional details, or create a separate account.'
+            : 'Sign in to the account below, or create another one for a different person on this number.'}
+      </p>
       <FormAlert message={error} />
       <ul className="account-list">
         {accounts.map((a) => (
@@ -305,8 +368,9 @@ function AccountStep({
 }
 
 function CreateAccountStep({
-  ticket, onCreated, onBack,
+  mode, ticket, onCreated, onBack,
 }: {
+  mode: PhoneAuthMode
   ticket: string
   onCreated: (token: TokenResponse) => void
   onBack?: () => void
@@ -339,6 +403,7 @@ function CreateAccountStep({
           email: text('email'),
           privacyNoticeVersion: reference.legalVersions.privacyNotice,
           termsVersion: reference.legalVersions.terms,
+          intent: mode === 'doctor' ? 'Doctor' : 'Patient',
         },
       }))
     } catch (e) {
@@ -350,8 +415,9 @@ function CreateAccountStep({
 
   return (
     <form method="post" onSubmit={handleSubmit} onInput={clearFieldErrorOnInput(setFieldErrors)}>
-      <h1>Create your account</h1>
-      <p className="lead">Only your name is required. You can add family members later.</p>
+      <StepLabel mode={mode} />
+      <h1>{copy[mode].createTitle}</h1>
+      <p className="lead">{copy[mode].createLead}</p>
       <FormAlert message={error} />
       <TextField name="fullName" label="Full name" autoComplete="name" maxLength={120} errors={fieldErrors.fullName} autoFocus />
       <TextField name="dateOfBirth" label="Date of birth" type="date" optional errors={fieldErrors.dateOfBirth} autoComplete="bday" />

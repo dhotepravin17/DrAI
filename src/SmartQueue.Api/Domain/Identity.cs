@@ -15,6 +15,10 @@ public class User
     public DateTimeOffset? TotpEnabledAt { get; set; }
     public long? TotpLastUsedStep { get; set; }
 
+    /// <summary>Consecutive wrong authenticator codes; the account locks for a while when it reaches the limit.</summary>
+    public int TotpFailedAttempts { get; set; }
+    public DateTimeOffset? TotpLockedUntil { get; set; }
+
     public List<UserRoleAssignment> RoleAssignments { get; set; } = [];
 }
 
