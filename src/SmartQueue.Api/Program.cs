@@ -27,6 +27,7 @@ builder.Services.AddOptions<JwtOptions>().BindConfiguration(JwtOptions.Section)
     .Validate(o => o.SigningKey.Length >= 32, "Jwt:SigningKey must be at least 32 characters.")
     .ValidateOnStart();
 builder.Services.AddOptions<OtpOptions>().BindConfiguration(OtpOptions.Section);
+builder.Services.AddOptions<AdminAuthOptions>().BindConfiguration(AdminAuthOptions.Section);
 builder.Services.AddOptions<RateLimitOptions>().BindConfiguration(RateLimitOptions.Section);
 builder.Services.AddOptions<BootstrapOptions>().BindConfiguration(BootstrapOptions.Section);
 

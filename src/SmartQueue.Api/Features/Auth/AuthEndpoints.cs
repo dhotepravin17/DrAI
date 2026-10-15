@@ -68,7 +68,8 @@ public static class AuthEndpoints
     }
 
     private static async Task<IResult> CreateSession(
-        SessionRequest request, TokenService tokens, AppDbContext db, IDataProtectionProvider protection, CancellationToken ct)
+        SessionRequest request, TokenService tokens, AppDbContext db, IDataProtectionProvider protection, AuditLogger audit,
+        IOptions<AdminAuthOptions> adminAuth, CancellationToken ct)
     {
         var mobile = await tokens.ValidatePhoneTicketAsync(request.PhoneTicket);
         if (mobile is null) return PhoneTicketInvalid();
@@ -79,6 +80,14 @@ public static class AuthEndpoints
 
         if (ActiveRoles(user).Contains(RoleName.SuperAdmin))
         {
+            if (!adminAuth.Value.AdminMfaRequired)
+            {
+                // Phone code only (development, or when production turns the second step off): still audited.
+                audit.Record("AdminSignIn", "User", user.Id.ToString(), details: "Without authenticator step", actorUserId: user.Id);
+                await db.SaveChangesAsync(ct);
+                return Results.Ok(Issue(tokens, user));
+            }
+
             MfaEnrollment? enrollment = null;
             if (user.TotpEnabledAt is null)
             {

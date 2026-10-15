@@ -15,11 +15,9 @@
 
 ## 1. Super Admin setup (Window A)
 
-1. Sign in with mobile number **9000000001**.
-2. You are asked for an authenticator code.
-   - Install Google Authenticator or Microsoft Authenticator on your phone.
-   - Scan the code shown on screen, or type in the secret.
-   - Enter the 6-digit code from the app.
+1. Sign in with mobile number **9000000001** and the code shown on screen.
+2. In development there is no authenticator step. (Production asks for an authenticator app code after the phone code;
+   see `Auth__AdminMfaRequired` in the README.)
 3. You land on the **Admin overview**. Check that the menu shows: **Overview, Doctors, Patients, Queues, Failures, Analytics, Audit, Cities**.
 
 Where each role lands after signing in: Super Admin → Admin overview; verified doctor or receptionist → Clinic queue;
@@ -121,9 +119,9 @@ protected page, you go back to that page instead.
   - Add a walk-in marked as an emergency without choosing a reason.
   - Expected: refused, and no stray patient record is created (check the patient list).
 
-- **Admin authenticator lockout** (do this one last)
-  - In a fresh window, sign in as 9000000001 and enter 5 wrong authenticator codes.
-  - Expected: "Too many incorrect authenticator codes … try again in 15 minutes". Even the correct code is refused until then.
+- **Admin authenticator lockout**
+  - Only applies when the authenticator step is on (production). It is off in development, so this is covered by the
+    automated tests (`dotnet test`) rather than by hand.
 
 ---
 

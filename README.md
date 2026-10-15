@@ -40,7 +40,7 @@ npm run dev
 
 In Development there is no SMS gateway: the one-time code is shown on the sign-in screen and written to the API log.
 
-The development Super Admin signs in with mobile number **9000000001** (configured in `appsettings.Development.json` under `Bootstrap:SuperAdmins`).
+The development Super Admin signs in with mobile number **9000000001** (configured in `appsettings.Development.json` under `Bootstrap:SuperAdmins`). In development the authenticator-app step is off (`Auth:AdminMfaRequired` is `false`), so the phone code is enough.
 
 ## Test
 
@@ -65,6 +65,7 @@ Set these through environment variables or a secret store, never in committed fi
 | `ConnectionStrings__Default` | SQL Server connection string |
 | `Jwt__SigningKey` | At least 32 random characters; the app refuses to start without it |
 | `Bootstrap__SuperAdmins__0__MobileNumber` | Seeds the first Super Admin account |
+| `Auth__AdminMfaRequired` | `true` (default) asks Super Admins for an authenticator-app code after the phone code (PRD §27.4); `false` signs them in with the phone code alone |
 | `Bootstrap__ApplyMigrationsOnStartup` | `false` in production; run migrations as a deployment step |
 | `Sms__Provider` | `Http` to send real SMS; unset logs messages instead (development) |
 | `Sms__Endpoint`, `Sms__ApiKey` | HTTPS gateway URL and bearer key. Each message is POSTed as `{ to, senderId, dltEntityId, dltTemplateId, type, message }` |

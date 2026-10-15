@@ -37,6 +37,17 @@ public sealed class OtpOptions
     public bool ExposeCodeInResponse { get; set; }
 }
 
+public sealed class AdminAuthOptions
+{
+    public const string Section = "Auth";
+
+    /// <summary>
+    /// Super Admins confirm sign-in with an authenticator app code after the phone code (PRD §27.4). On by default;
+    /// development turns it off in appsettings.Development.json.
+    /// </summary>
+    public bool AdminMfaRequired { get; set; } = true;
+}
+
 public sealed record IssuedToken(string AccessToken, DateTimeOffset ExpiresAt);
 
 /// <summary>Issues tokens using the real system clock, because token validation always uses it.</summary>
