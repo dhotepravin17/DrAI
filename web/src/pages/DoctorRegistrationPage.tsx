@@ -44,7 +44,7 @@ export function DoctorRegistrationPage() {
 
   return (
     <section className="panel">
-      <title>Doctor registration · Smart Doctor Queue</title>
+      <title>Doctor registration · Smart Doctor</title>
       {(!registration || registration.status === 'Draft') && <p className="meta step-label">Step 2 of 2 · Professional details</p>}
       <h1>Doctor registration</h1>
       {registration && <StatusBanner registration={registration} />}

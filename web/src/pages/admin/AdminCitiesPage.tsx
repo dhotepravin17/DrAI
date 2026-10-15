@@ -39,7 +39,7 @@ export function AdminCitiesPage() {
 
   return (
     <section>
-      <title>City codes · Smart Doctor Queue</title>
+      <title>City codes · Smart Doctor</title>
       <h1>City codes</h1>
       <p className="lead">Doctor IDs use the city code, for example NGP-Dr-0001. Codes cannot be changed once doctors are issued IDs.</p>
       {error ? <p className="alert alert-error" role="alert">{errorMessage(error)}</p> : null}

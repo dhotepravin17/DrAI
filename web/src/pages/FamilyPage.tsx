@@ -36,7 +36,7 @@ export function FamilyPage() {
 
   return (
     <section className="stack">
-      <title>Family · Smart Doctor Queue</title>
+      <title>Family · Smart Doctor</title>
       <div className="page-head">
         <h1>Family</h1>
         <button type="button" className="button primary" onClick={() => setDialog({ kind: 'add' })}>Add family member</button>

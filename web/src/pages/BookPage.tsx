@@ -84,7 +84,7 @@ export function BookPage() {
 
   return (
     <section className="panel narrow">
-      <title>Book appointment · Smart Doctor Queue</title>
+      <title>Book appointment · Smart Doctor</title>
       <h1>Book an appointment</h1>
       <dl className="details compact">
         <div><dt>Doctor</dt><dd>{doctor.data.fullName}</dd></div>

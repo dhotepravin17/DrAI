@@ -39,7 +39,7 @@ export function ProfileSharePage() {
 
   return (
     <section className="stack">
-      <title>Profile and QR code · Smart Doctor Queue</title>
+      <title>Profile and QR code · Smart Doctor</title>
       <h1 className="no-print">Profile and QR code</h1>
       <div className="panel no-print">
         <h2>Your public profile</h2>

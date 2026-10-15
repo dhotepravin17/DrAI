@@ -41,7 +41,7 @@ export function AdminDoctorDetailPage() {
 
   return (
     <section className="panel">
-      <title>{`Review ${d.fullName} · Smart Doctor Queue`}</title>
+      <title>{`Review ${d.fullName} · Smart Doctor`}</title>
       <p><Link to="/admin/doctors">← Back to doctor verification</Link></p>
       <header className="profile-header">
         <div>

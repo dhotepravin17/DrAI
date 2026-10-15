@@ -31,7 +31,7 @@ export function ReportsPage() {
 
   return (
     <section className="stack">
-      <title>Reports · Smart Doctor Queue</title>
+      <title>Reports · Smart Doctor</title>
       <h1>Reports</h1>
       <form
         className="inline-search"

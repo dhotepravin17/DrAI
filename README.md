@@ -1,4 +1,4 @@
-# Smart Doctor Queue
+# Smart Doctor
 
 Multi-doctor, real-time clinic queue platform. The product requirements are in [docs/PRD.md](docs/PRD.md).
 

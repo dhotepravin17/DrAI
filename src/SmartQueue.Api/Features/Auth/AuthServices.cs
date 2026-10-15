@@ -141,8 +141,8 @@ public static class SmsTexts
     /// </summary>
     public static string Otp(string code, string? domain) =>
         domain is null
-            ? $"{code} is your Smart Doctor Queue verification code. It expires in 5 minutes."
-            : $"{code} is your Smart Doctor Queue verification code. It expires in 5 minutes.\n\n@{domain} #{code}";
+            ? $"{code} is your Smart Doctor verification code. It expires in 5 minutes."
+            : $"{code} is your Smart Doctor verification code. It expires in 5 minutes.\n\n@{domain} #{code}";
 }
 
 /// <summary>Used when no SMS provider is configured (<c>Sms:Provider</c> is not set): development and tests.</summary>

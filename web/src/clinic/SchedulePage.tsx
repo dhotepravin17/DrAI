@@ -19,7 +19,7 @@ export function SchedulePage() {
 
   return (
     <section className="stack">
-      <title>Schedule · Smart Doctor Queue</title>
+      <title>Schedule · Smart Doctor</title>
       <h1>Schedule</h1>
       {!isDoctor && <p className="alert alert-info">Only the doctor can change the schedule. You can see it here.</p>}
       <WeeklySessions key={JSON.stringify(schedule.data.sessions)} initial={schedule.data.sessions} readOnly={!isDoctor} onSaved={schedule.reload} />

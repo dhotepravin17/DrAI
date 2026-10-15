@@ -1,6 +1,6 @@
 {
-  "name": "Smart Doctor Queue",
-  "short_name": "DoctorQueue",
+  "name": "Smart Doctor",
+  "short_name": "Smart Doctor",
   "description": "Find your doctor, book your clinic appointment, and get alerted when your turn is near.",
   "start_url": "/",
   "display": "standalone",

@@ -29,7 +29,7 @@ export function Layout() {
         <div className="container header-inner">
           <Link to={doctorMode ? doctorHome : '/'} className="brand">
             <span className="brand-mark" aria-hidden="true">+</span>
-            Smart Doctor Queue
+            Smart Doctor
           </Link>
           <nav aria-label="Main">
             <ul className="nav-list">

@@ -62,7 +62,7 @@ export function AnnouncementsPage() {
 
   return (
     <section className="stack">
-      <title>Notices and leave · Smart Doctor Queue</title>
+      <title>Notices and leave · Smart Doctor</title>
       <h1>Notices and leave</h1>
       <p className="lead">
         Tell patients when you are out of the clinic, on leave, closed for a holiday, opening late or working changed hours.

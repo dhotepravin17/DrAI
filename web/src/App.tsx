@@ -77,7 +77,7 @@ const router = createBrowserRouter([
         path: '*',
         element: (
           <section className="panel">
-            <title>Page not found · Smart Doctor Queue</title>
+            <title>Page not found · Smart Doctor</title>
             <h1>Page not found</h1>
             <Link to="/" className="button">Go to doctor search</Link>
           </section>

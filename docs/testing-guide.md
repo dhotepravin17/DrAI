@@ -1,4 +1,4 @@
-# Smart Doctor Queue – Manual testing guide
+# Smart Doctor – Manual testing guide
 
 ## Before you start
 

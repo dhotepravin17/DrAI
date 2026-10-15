@@ -33,7 +33,7 @@ export function AdminAnalyticsPage() {
 
   return (
     <section className="stack">
-      <title>Analytics · Smart Doctor Queue</title>
+      <title>Analytics · Smart Doctor</title>
       <h1>Analytics</h1>
       <form
         className="inline-search"

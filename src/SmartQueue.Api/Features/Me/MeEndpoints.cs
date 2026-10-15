@@ -39,7 +39,7 @@ public static class MeEndpoints
         var links = await db.PatientLinks.AsNoTracking().Where(l => l.ViewerUserId == userId)
             .Select(l => new { l.Relationship, l.Status, l.CreatedAt, l.RespondedAt, l.RevokedAt }).ToListAsync(ct);
 
-        http.Response.Headers.ContentDisposition = "attachment; filename=\"smart-doctor-queue-data.json\"";
+        http.Response.Headers.ContentDisposition = "attachment; filename=\"smart-doctor-data.json\"";
         return Results.Ok(new
         {
             exportedAt = clock.GetUtcNow(),

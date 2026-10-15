@@ -62,7 +62,7 @@ export function NotificationsPage() {
 
   return (
     <section className="stack">
-      <title>Notifications · Smart Doctor Queue</title>
+      <title>Notifications · Smart Doctor</title>
       <div className="page-head">
         <h1>Notifications</h1>
         {data && data.unread > 0 && (

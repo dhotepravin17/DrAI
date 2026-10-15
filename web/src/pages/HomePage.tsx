@@ -54,13 +54,13 @@ export function HomePage() {
 
   return (
     <>
-      <title>Find a doctor · Smart Doctor Queue</title>
+      <title>Find a doctor · Smart Doctor</title>
       <section className="hero">
         <h1>Book your doctor's appointment from home</h1>
         <p className="lead">Find your doctor, see today's clinic status, and get alerted when your turn is close.</p>
         {!token && (
           <div className="register-banner">
-            <p>New to Smart Doctor Queue?</p>
+            <p>New to Smart Doctor?</p>
             <Link to="/register/patient" className="button primary">Register as a patient</Link>
             <Link to="/register/doctor" className="button">Join as a doctor</Link>
           </div>
