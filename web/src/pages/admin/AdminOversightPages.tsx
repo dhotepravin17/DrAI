@@ -24,7 +24,7 @@ export function AdminOverviewPage() {
   ]
   return (
     <section className="stack">
-      <title>Platform overview · MediCare Plus</title>
+      <title>Platform overview · Valmedo</title>
       <h1>Platform overview</h1>
       {error ? <p className="alert alert-error">{errorMessage(error)}</p> : null}
       <ul className="stat-grid">
@@ -56,7 +56,7 @@ export function AdminPatientsPage() {
 
   return (
     <section className="stack">
-      <title>Patients · MediCare Plus</title>
+      <title>Patients · Valmedo</title>
       <h1>Patients</h1>
       <form role="search" className="inline-search" onSubmit={search} key={q}>
         <label htmlFor="patient-q" className="visually-hidden">Search patients</label>
@@ -138,7 +138,7 @@ export function AdminQueuesPage() {
   const { data, error, loading, reload } = useApi<AdminQueueRow[]>(`/admin/queues?date=${date}`)
   return (
     <section className="stack">
-      <title>Appointments · MediCare Plus</title>
+      <title>Appointments · Valmedo</title>
       <div className="page-head">
         <h1>Appointments</h1>
         <div className="inline-field">
@@ -177,7 +177,7 @@ export function AdminNotificationsPage() {
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1
   return (
     <section className="stack">
-      <title>Notification failures · MediCare Plus</title>
+      <title>Notification failures · Valmedo</title>
       <h1>Notification failures</h1>
       {error ? <p className="alert alert-error">{errorMessage(error)}</p> : null}
       {loading && !data && <Loading />}
@@ -221,7 +221,7 @@ export function AdminAuditPage() {
 
   return (
     <section className="stack">
-      <title>Audit log · MediCare Plus</title>
+      <title>Audit log · Valmedo</title>
       <h1>Audit log</h1>
       <form className="inline-search" key={params.toString()} onSubmit={(e) => {
         e.preventDefault()

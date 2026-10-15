@@ -28,7 +28,7 @@ export function Layout() {
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="container header-inner">
-          <Link to={doctorMode ? doctorHome : '/'} className="brand" aria-label="MediCare Plus home">
+          <Link to={doctorMode ? doctorHome : '/'} className="brand" aria-label="Valmedo - Appointment, home">
             <Logo />
           </Link>
           <nav aria-label="Main">

@@ -54,13 +54,13 @@ export function HomePage() {
 
   return (
     <>
-      <title>Find a doctor · MediCare Plus</title>
+      <title>Find a doctor · Valmedo</title>
       <section className="hero">
         <h1>Book your doctor's appointment from home</h1>
         <p className="lead">Find your doctor, see today's clinic status, and get alerted when your turn is close.</p>
         {!token && (
           <div className="register-banner">
-            <p>New to MediCare Plus?</p>
+            <p>New to Valmedo?</p>
             <Link to="/register/patient" className="button primary">Register as a patient</Link>
             <Link to="/register/doctor" className="button">Join as a doctor</Link>
           </div>

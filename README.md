@@ -1,6 +1,6 @@
-<img src="web/public/logo.svg" alt="MediCare Plus" width="320">
+<img src="web/public/logo.svg" alt="Valmedo - Appointment" width="300">
 
-# MediCare Plus
+# Valmedo - Appointment
 
 Multi-doctor, real-time clinic appointment platform. The product requirements are in [docs/PRD.md](docs/PRD.md).
 

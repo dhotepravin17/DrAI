@@ -1,4 +1,4 @@
-# MediCare Plus – Manual testing guide
+# Valmedo – Manual testing guide
 
 ## Before you start
 

@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 72" role="img" aria-label="MediCare Plus">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 72" role="img" aria-label="Valmedo - Appointment">
   <defs>
-    <linearGradient id="mcp-logo-bg" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="vm-logo-bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#14b8a6"/>
       <stop offset="1" stop-color="#0f766e"/>
     </linearGradient>
   </defs>
   <g transform="translate(4 4)">
-    <rect width="64" height="64" rx="16" fill="url(#mcp-logo-bg)"/>
-    <path d="M26 13h12a2 2 0 0 1 2 2v9h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-9v9a2 2 0 0 1-2 2H26a2 2 0 0 1-2-2v-9h-9a2 2 0 0 1-2-2V26a2 2 0 0 1 2-2h9v-9a2 2 0 0 1 2-2z" fill="#ffffff"/>
-    <path d="M16 32.5h8l3.5-6 5 12.5 4-8.5 2.5 2H48" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M53 5.5v9M48.5 10h9" stroke="#ccfbf1" stroke-width="3.2" stroke-linecap="round"/>
+    <rect width="64" height="64" rx="16" fill="url(#vm-logo-bg)"/>
+    <path d="M26 11h12a2 2 0 0 1 2 2v11h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H40v11a2 2 0 0 1-2 2H26a2 2 0 0 1-2-2V40H13a2 2 0 0 1-2-2V26a2 2 0 0 1 2-2h11V13a2 2 0 0 1 2-2z" fill="#ffffff"/>
+    <path d="M14 32.5h9l3.5-6 5 12.5 4-8.5 2.5 2H50" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
-  <text x="84" y="47" font-family="'Segoe UI', system-ui, -apple-system, Roboto, sans-serif" font-size="32" font-weight="700" fill="#17201f" letter-spacing="-0.5">MediCare<tspan fill="#0f766e" font-weight="800" dx="8">Plus</tspan></text>
+  <text x="84" y="38" font-family="'Segoe UI', system-ui, -apple-system, Roboto, sans-serif" font-size="34" font-weight="800" fill="#17201f" letter-spacing="-0.5">Valmedo</text>
+  <text x="86" y="60" font-family="'Segoe UI', system-ui, -apple-system, Roboto, sans-serif" font-size="13" font-weight="700" fill="#0f766e" letter-spacing="3.2">APPOINTMENT</text>
 </svg>

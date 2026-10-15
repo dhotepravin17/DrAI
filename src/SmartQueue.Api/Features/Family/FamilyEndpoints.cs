@@ -202,7 +202,7 @@ public static class FamilyEndpoints
         var recipients = await db.Users.Where(u => u.MobileNumber == mobile && u.IsActive && u.Id != userId).Select(u => u.Id).ToListAsync(ct);
         await outbox.EnqueueAsync(NotificationEvents.LinkInvitation, $"link:{link.Id}", new NotificationPayload(
             recipients, recipients.Count == 0 ? mobile : null, "Family access request",
-            $"{me.FullName} asked to see your visit history on MediCare Plus. Open the app to accept or decline.", null, "/family"), ct);
+            $"{me.FullName} asked to see your visit history on Valmedo. Open the app to accept or decline.", null, "/family"), ct);
         await db.SaveChangesAsync(ct);
         return Results.Created($"/api/v1/me/links/{link.Id}", new { link.Id, link.Status });
     }

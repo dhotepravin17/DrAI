@@ -10,9 +10,9 @@ export function RegisterChoicePage() {
 
   return (
     <section className="panel narrow">
-      <title>Register · MediCare Plus</title>
+      <title>Register · Valmedo</title>
       <h1>Create an account</h1>
-      <p className="lead">Choose how you will use MediCare Plus.</p>
+      <p className="lead">Choose how you will use Valmedo.</p>
       <ul className="role-choice-list">
         <li>
           <Link to="/register/patient" className="role-choice">
@@ -39,7 +39,7 @@ export function PatientRegisterPage() {
   const navigate = useNavigate()
   return (
     <section className="panel narrow">
-      <title>Patient registration · MediCare Plus</title>
+      <title>Patient registration · Valmedo</title>
       <PhoneAuthFlow mode="patient" onDone={async (token) => navigate(await landingPath(token), { replace: true })} />
       <p className="meta">Are you a doctor? <Link to="/register/doctor">Register as a doctor</Link></p>
     </section>
@@ -54,7 +54,7 @@ export function DoctorRegisterPage() {
 
   return (
     <section className="panel narrow">
-      <title>Doctor registration · MediCare Plus</title>
+      <title>Doctor registration · Valmedo</title>
       <PhoneAuthFlow mode="doctor" onDone={(t) => navigate(t.roles.includes('SuperAdmin') ? '/admin' : '/doctor/register', { replace: true })} />
       <p className="meta">Booking as a patient? <Link to="/register/patient">Create a patient account</Link></p>
     </section>

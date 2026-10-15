@@ -32,7 +32,7 @@ export function DoctorProfilePage() {
     const missing = error instanceof ApiError && error.status === 404
     return (
       <section className="panel">
-        <title>Doctor not found · MediCare Plus</title>
+        <title>Doctor not found · Valmedo</title>
         <h1>{missing ? 'Doctor not found' : 'Could not load this doctor'}</h1>
         <p>{missing ? `No active doctor has the ID ${code}. The doctor may not be verified yet.` : errorMessage(error)}</p>
         <Link to="/" className="button">Back to search</Link>
@@ -45,7 +45,7 @@ export function DoctorProfilePage() {
 
   return (
     <article className="stack">
-      <title>{`${doctor.fullName} · MediCare Plus`}</title>
+      <title>{`${doctor.fullName} · Valmedo`}</title>
       <section className="panel profile">
         <header className="profile-header">
           <div>

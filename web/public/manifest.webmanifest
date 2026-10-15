@@ -1,6 +1,6 @@
 {
-  "name": "MediCare Plus",
-  "short_name": "MediCare Plus",
+  "name": "Valmedo - Appointment",
+  "short_name": "Valmedo",
   "description": "Find your doctor, book your clinic appointment, and get alerted when your turn is near.",
   "start_url": "/",
   "display": "standalone",

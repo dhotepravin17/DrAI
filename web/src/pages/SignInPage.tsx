@@ -29,7 +29,7 @@ export function SignInPage() {
 
   return (
     <section className="panel narrow">
-      <title>Sign in · MediCare Plus</title>
+      <title>Sign in · Valmedo</title>
       <PhoneAuthFlow mode="signin" onDone={async (token) => navigate(next ?? await landingPath(token), { replace: true })} />
       <p className="meta">New here? <Link to="/register">Register as a patient or a doctor</Link></p>
     </section>

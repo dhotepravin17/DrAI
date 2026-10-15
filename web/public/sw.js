@@ -10,7 +10,7 @@ self.addEventListener('push', (event) => {
     data = { body: event.data ? event.data.text() : '' }
   }
   event.waitUntil(
-    self.registration.showNotification(data.title || 'MediCare Plus', {
+    self.registration.showNotification(data.title || 'Valmedo', {
       body: data.body || '',
       tag: data.tag,
       renotify: Boolean(data.tag),
