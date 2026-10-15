@@ -1,6 +1,8 @@
-# Smart Doctor
+<img src="web/public/logo.svg" alt="MediCare Plus" width="320">
 
-Multi-doctor, real-time clinic queue platform. The product requirements are in [docs/PRD.md](docs/PRD.md).
+# MediCare Plus
+
+Multi-doctor, real-time clinic appointment platform. The product requirements are in [docs/PRD.md](docs/PRD.md).
 
 **Current status:** PRD phases 1–4 are implemented: OTP sign-in, patient and family accounts, doctor registration with the mandatory declaration and Super Admin verification, doctor search and profiles, schedules, online and walk-in booking, the live queue with emergency priority and five-patient missed-turn requeue, real-time updates, in-app/Web Push/SMS notifications through an outbox, visit and doctor history, and Super Admin oversight with audit logs. Phase 5 groundwork is in place: a DLT-ready SMS gateway, product analytics (PRD §38), Free/Pro/Premium plan limits (§39), data-retention cleanup (§32.4), a k6 load test, and a backup/restore drill. What remains before the pilot is listed under [Before the pilot](#before-the-pilot).
 

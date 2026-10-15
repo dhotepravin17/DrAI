@@ -42,7 +42,7 @@ export function AdminDoctorsPage() {
 
   return (
     <section>
-      <title>Doctor verification · Smart Doctor</title>
+      <title>Doctor verification · MediCare Plus</title>
       <h1>Doctor verification</h1>
       <nav className="tabs" aria-label="Filter by status">
         {tabs.map((t) => (

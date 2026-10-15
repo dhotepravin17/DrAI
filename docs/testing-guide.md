@@ -1,4 +1,4 @@
-# Smart Doctor – Manual testing guide
+# MediCare Plus – Manual testing guide
 
 ## Before you start
 

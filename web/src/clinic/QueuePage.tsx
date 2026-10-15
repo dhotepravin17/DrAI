@@ -79,7 +79,7 @@ export function QueuePage() {
 
   return (
     <section className="stack">
-      <title>Appointments · Smart Doctor</title>
+      <title>Appointments · MediCare Plus</title>
       <div className="page-head">
         <h1>Appointments</h1>
         <div className="inline-field">

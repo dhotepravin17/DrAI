@@ -31,7 +31,7 @@ export function VisitsPage() {
 
   return (
     <section className="stack">
-      <title>My visits · Smart Doctor</title>
+      <title>My visits · MediCare Plus</title>
       <h1>My visits</h1>
       <div className="field inline-field">
         <label htmlFor="person">Person</label>

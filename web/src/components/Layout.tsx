@@ -5,6 +5,7 @@ import { useApi } from '../api/useApi'
 import { usePolling } from '../api/useQueueSignal'
 import { useAuth } from '../auth/authState'
 import { doctorHomePath } from '../auth/landing'
+import { Logo } from './Logo'
 
 export function Layout() {
   const { me, token, signOut } = useAuth()
@@ -27,9 +28,8 @@ export function Layout() {
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="container header-inner">
-          <Link to={doctorMode ? doctorHome : '/'} className="brand">
-            <span className="brand-mark" aria-hidden="true">+</span>
-            Smart Doctor
+          <Link to={doctorMode ? doctorHome : '/'} className="brand" aria-label="MediCare Plus home">
+            <Logo />
           </Link>
           <nav aria-label="Main">
             <ul className="nav-list">

@@ -56,7 +56,7 @@ export function AccountPage() {
       const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
       const link = document.createElement('a')
       link.href = url
-      link.download = 'smart-doctor-data.json'
+      link.download = 'medicare-plus-data.json'
       link.click()
       URL.revokeObjectURL(url)
     } catch (e) {
@@ -66,7 +66,7 @@ export function AccountPage() {
 
   return (
     <section className="stack">
-      <title>Account · Smart Doctor</title>
+      <title>Account · MediCare Plus</title>
       <h1>Account</h1>
       {message && <p className="alert alert-success" role="status">{message}</p>}
       <FormAlert message={error} />

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Logo } from '../components/Logo'
 import { useClinicScope } from './clinicScopeState'
 
 /**
@@ -39,7 +40,7 @@ export function ProfileSharePage() {
 
   return (
     <section className="stack">
-      <title>Profile and QR code · Smart Doctor</title>
+      <title>Profile and QR code · MediCare Plus</title>
       <h1 className="no-print">Profile and QR code</h1>
       <div className="panel no-print">
         <h2>Your public profile</h2>
@@ -53,6 +54,7 @@ export function ProfileSharePage() {
       </div>
 
       <div className="panel qr-poster">
+        <p className="brand qr-brand"><Logo size={40} /></p>
         <p className="qr-title">Scan to book an appointment</p>
         <p className="qr-doctor">{current.doctorName}</p>
         <p className="meta">{current.clinicName} · Doctor ID <span className="code">{code}</span></p>

@@ -45,7 +45,7 @@ export function ClinicLayout() {
   if (!scope) {
     return (
       <section className="panel narrow">
-        <title>Clinic · Smart Doctor</title>
+        <title>Clinic · MediCare Plus</title>
         <h1>No clinic yet</h1>
         {me?.doctor ? (
           <p>Your doctor registration is {me.doctor.status === 'Verified' ? 'verified' : 'not verified yet'}. The clinic tools open once you are verified.</p>

@@ -37,7 +37,7 @@ export function AppointmentsPage() {
 
   return (
     <section className="stack">
-      <title>My appointments · Smart Doctor</title>
+      <title>My appointments · MediCare Plus</title>
       <h1>My appointments</h1>
       {error ? <p className="alert alert-error" role="alert">{errorMessage(error)}</p> : null}
       {loading && !data && <Loading />}
@@ -91,7 +91,7 @@ export function AppointmentPage() {
 
   return (
     <section className="stack">
-      <title>{`${data.token} · Smart Doctor`}</title>
+      <title>{`${data.token} · MediCare Plus`}</title>
       {justBooked && <p className="alert alert-success" role="status">Booked. Keep this page open or turn on alerts to know when your turn is near.</p>}
       <div className="panel live-card" aria-live="polite">
         <p className="meta">{data.doctorName} · {formatDay(data.date)} · {data.sessionName}</p>
