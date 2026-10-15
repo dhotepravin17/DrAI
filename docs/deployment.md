@@ -105,6 +105,25 @@ Notes:
   folder, and the API will not start until those files are cleaned).
 - For a fixed address (`test.yourdomain.in`), create a named tunnel in the free Cloudflare Zero Trust dashboard.
 
+### 3A-2. On GitHub with Codespaces (free monthly hours, no PC needed)
+
+A Codespace is a cloud machine on GitHub. The repository's `.devcontainer` folder gives it .NET 10, Node 22 and a
+SQL Server container, so the whole app runs there with an HTTPS link.
+
+1. On GitHub open the repository → **Code** → **Codespaces** → **…** → **New with options**. Choose the branch
+   (for example `worktree-review-fixes`) and a **2-core** machine, then **Create codespace**. The first start takes
+   about 5 minutes.
+2. In the codespace terminal: `bash scripts/codespace-start.sh --public`
+3. Open the address it prints (`https://<codespace>-8080.app.github.dev`). In **Ports**, port 8080 shows
+   **Public** when anyone may open it; set it back to **Private** to restrict it to you.
+4. Sign in with any 10-digit number; the code is shown on screen. Super Admin: `9000000001`.
+
+Limits: personal accounts get a free monthly allowance of core-hours and storage (a 2-core machine uses 2 core-hours
+per hour); see GitHub → Settings → Billing. A codespace **stops after 30 minutes without activity** in the browser
+tab (turn alerts stop with it), and data stays in the codespace until you delete it. Stop it from
+**Code → Codespaces → … → Stop codespace** when you finish. It runs in Development mode (codes on screen), so use it
+for testing and demos only.
+
 ### 3B. A real server on free credits
 
 Use the [budget VPS steps](#5-step-by-step-budget-vps-scripted) with a provider that gives new accounts credit:

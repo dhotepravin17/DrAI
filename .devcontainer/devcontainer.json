@@ -1,0 +1,30 @@
+{
+  // Valmedo - Appointment in GitHub Codespaces: .NET 10 + Node 22, with SQL Server in a side container.
+  // After the codespace starts, run:  bash scripts/codespace-start.sh
+  // See docs/deployment.md, "GitHub Codespaces".
+  "name": "Valmedo - Appointment",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "shutdownAction": "stopCompose",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "hostRequirements": { "cpus": 2, "memory": "8gb" },
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": { "label": "Valmedo", "onAutoForward": "notify" },
+    "1433": { "label": "SQL Server", "onAutoForward": "ignore" }
+  },
+  "remoteEnv": {
+    "ConnectionStrings__Default": "Server=localhost,1433;Database=SmartQueue;User Id=sa;Password=Codespace-Passw0rd!;TrustServerCertificate=True",
+    "SMARTQUEUE_TEST_SQL": "Server=localhost,1433;User Id=sa;Password=Codespace-Passw0rd!;TrustServerCertificate=True"
+  },
+  "postCreateCommand": "dotnet tool restore && dotnet restore && cd web && npm ci --no-audit --no-fund",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-dotnettools.csdevkit", "dbaeumer.vscode-eslint"]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+# Codespaces / Dev Containers: the "app" container shares the database container's network,
+# so SQL Server is reachable at localhost:1433 and only the app port (8080) is forwarded.
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/dotnet:10.0
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    network_mode: service:db
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer          # free for development and testing
+      MSSQL_SA_PASSWORD: Codespace-Passw0rd!
+      MSSQL_MEMORY_LIMIT_MB: "2048"
+    volumes:
+      - sqldata:/var/opt/mssql
+
+volumes:
+  sqldata:
