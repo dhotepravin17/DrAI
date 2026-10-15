@@ -101,8 +101,8 @@ Notes:
   authenticator step. Anyone with the link can sign in with any number, so share it only with testers and close it
   afterwards.
 - `src/SmartQueue.Api/wwwroot` is ignored by git. To go back to the normal two-server development setup, delete it
-  **and run `dotnet build src/SmartQueue.Api` once** (the build remembers the folder and the API will not start until
-  it is rebuilt).
+  **and run `dotnet clean src/SmartQueue.Api` then `dotnet build src/SmartQueue.Api`** (the build remembers the
+  folder, and the API will not start until those files are cleaned).
 - For a fixed address (`test.yourdomain.in`), create a named tunnel in the free Cloudflare Zero Trust dashboard.
 
 ### 3B. A real server on free credits
