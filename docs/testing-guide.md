@@ -43,6 +43,9 @@ protected page, you go back to that page instead.
    - Open the doctor and click **Verify**.
    - Note the Doctor ID that is issued, for example `NGP-Dr-0001`.
 6. Back in **Window B**, sign out and sign in again with 9876500001. You now land on the **Clinic** queue.
+   - The doctor's menu shows only doctor items: **Clinic** (or **Registration** before verification), **Alerts** and
+     **Sign out**. Patient pages such as Appointments, Family or Account send the doctor back to the clinic.
+   - A patient's menu (section 3) has no "Register as a doctor" link.
 7. Go to Clinic → **Schedule**:
    - Add a **Morning** session for today's weekday, for example 08:00–14:00, capacity 20.
    - Save.

@@ -8,7 +8,7 @@ import { QueuePage } from './clinic/QueuePage'
 import { SchedulePage } from './clinic/SchedulePage'
 import { ReportsPage } from './clinic/ReportsPage'
 import { StaffPage } from './clinic/StaffPage'
-import { Layout, RequireAuth } from './components/Layout'
+import { Layout, RedirectDoctors, RequireAuth } from './components/Layout'
 import { AccountPage } from './pages/AccountPage'
 import { AdminAnalyticsPage } from './pages/admin/AdminAnalyticsPage'
 import { AdminCitiesPage } from './pages/admin/AdminCitiesPage'
@@ -29,25 +29,26 @@ import { SignInPage } from './pages/SignInPage'
 import { VisitsPage } from './pages/VisitsPage'
 
 const signedIn = (page: ReactNode) => <RequireAuth>{page}</RequireAuth>
+const patientOnly = (page: ReactNode) => <RequireAuth patientOnly>{page}</RequireAuth>
 const admin = (page: ReactNode) => <RequireAuth role="SuperAdmin">{page}</RequireAuth>
 
 const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <RedirectDoctors><HomePage /></RedirectDoctors> },
       { path: 'doctors/:code', element: <DoctorProfilePage /> },
-      { path: 'doctors/:code/book', element: signedIn(<BookPage />) },
+      { path: 'doctors/:code/book', element: patientOnly(<BookPage />) },
       { path: 'sign-in', element: <SignInPage /> },
       { path: 'register', element: <RegisterChoicePage /> },
       { path: 'register/patient', element: <PatientRegisterPage /> },
       { path: 'register/doctor', element: <DoctorRegisterPage /> },
-      { path: 'appointments', element: signedIn(<AppointmentsPage />) },
-      { path: 'appointments/:id', element: signedIn(<AppointmentPage />) },
-      { path: 'visits', element: signedIn(<VisitsPage />) },
-      { path: 'family', element: signedIn(<FamilyPage />) },
+      { path: 'appointments', element: patientOnly(<AppointmentsPage />) },
+      { path: 'appointments/:id', element: patientOnly(<AppointmentPage />) },
+      { path: 'visits', element: patientOnly(<VisitsPage />) },
+      { path: 'family', element: patientOnly(<FamilyPage />) },
       { path: 'notifications', element: signedIn(<NotificationsPage />) },
-      { path: 'account', element: signedIn(<AccountPage />) },
+      { path: 'account', element: patientOnly(<AccountPage />) },
       { path: 'doctor/register', element: signedIn(<DoctorRegistrationPage />) },
       {
         path: 'clinic',
