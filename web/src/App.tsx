@@ -6,6 +6,7 @@ import { ClinicHistoryPage } from './clinic/ClinicHistoryPage'
 import { ClinicLayout } from './clinic/ClinicLayout'
 import { QueuePage } from './clinic/QueuePage'
 import { SchedulePage } from './clinic/SchedulePage'
+import { ProfileSharePage } from './clinic/ProfileSharePage'
 import { ReportsPage } from './clinic/ReportsPage'
 import { StaffPage } from './clinic/StaffPage'
 import { Layout, RedirectDoctors, RequireAuth } from './components/Layout'
@@ -60,6 +61,7 @@ const router = createBrowserRouter([
           { path: 'history', element: <ClinicHistoryPage /> },
           { path: 'reports', element: <ReportsPage /> },
           { path: 'staff', element: <StaffPage /> },
+          { path: 'profile', element: <ProfileSharePage /> },
         ],
       },
       { path: 'admin', element: admin(<AdminOverviewPage />) },

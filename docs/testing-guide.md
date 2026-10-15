@@ -44,9 +44,16 @@ protected page, you go back to that page instead.
    - The doctor's menu shows only doctor items: **Clinic** (or **Registration** before verification), **Alerts** and
      **Sign out**. Patient pages such as Appointments, Family or Account send the doctor back to the clinic.
    - A patient's menu (section 3) has no "Register as a doctor" link.
-7. Go to Clinic → **Schedule**:
-   - Add a **Morning** session for today's weekday, for example 08:00–14:00, capacity 20.
-   - Save.
+7. The Queue page shows **Finish setting up your clinic**. Until hours are set, patients see "This doctor has not
+   published clinic hours yet" on the doctor's profile and cannot join the queue.
+8. Click **Set your weekly clinic hours** (or the **Schedule** tab):
+   - Click **Add session**, choose today's weekday, for example 08:00–14:00, capacity 20. Use **Copy Monday to Tue–Sat**
+     to repeat a day.
+   - Click **Save weekly hours**. The checklist disappears and the profile now lists sessions.
+   - On the same page, **Holidays and special hours** closes a date or sets different hours for one date.
+9. **Notices & leave** tab: post an **Out of clinic**, **Leave**, **Holiday**, **Delayed opening** or other notice.
+   It appears as a banner on the doctor's profile. Closing notices cancel and notify bookings in that period.
+10. **Profile & QR** tab: copy the public profile link, or click **Print QR poster** for the front desk.
 
 ---
 
@@ -55,7 +62,8 @@ protected page, you go back to that page instead.
 1. Click **Register**, then **I'm a patient** (or **Register as a patient** on the home page).
    Enter **9876500002**, the code, and your name. You land on **Appointments**.
 2. Go to **Family** and add a child (enter a date of birth and confirm you are the guardian).
-3. Search for the doctor by Doctor ID or name, open the profile and click **Book**.
+3. **Find a doctor** lists all doctors straight away. Narrow it with a name, Doctor ID, city or specialty, or leave
+   "All cities" / "All specialties" to see everyone. Open the profile and click **Join queue**.
    - Choose today's **Morning** session.
    - Choose who the appointment is for: yourself or the child.
 4. Open **Appointments**. You should see:
@@ -103,16 +111,16 @@ protected page, you go back to that page instead.
 ## 7. The code-review fixes
 
 - **Closing while a patient is being seen**
-  - With a patient called or in consultation, post a **Clinic closure** announcement.
+  - With a patient called or in consultation, post a **Clinic closure** notice on the **Notices & leave** tab.
   - Expected: refused with the patient's token; the queue stays open.
 
 - **Removing one delay keeps the others**
-  - Post two **Delayed opening** announcements for today: 30 minutes and 45 minutes.
+  - Post two **Delayed opening** notices for today: 30 minutes and 45 minutes.
   - The patient's estimate grows by 45 minutes.
   - Remove the 45-minute one. Expected: the delay drops to 30, not 0.
 
 - **Overlapping closures**
-  - Close tomorrow from the **Schedule** page, and also post a **Leave** announcement covering tomorrow.
+  - Close tomorrow from the **Schedule** page, and also post a **Leave** notice covering tomorrow.
   - Remove only one of them. Expected: tomorrow still cannot be booked.
 
 - **Walk-in validation**

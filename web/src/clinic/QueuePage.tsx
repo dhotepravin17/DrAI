@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api, errorMessage } from '../api/client'
 import {
   appointmentStatusLabels, emergencyLabels, sourceLabels, type EmergencyReason, type PatientMatch, type QueueEntry,
@@ -10,6 +11,7 @@ import { SelectField, TextAreaField, TextField } from '../components/Fields'
 import { Loading } from '../components/Layout'
 import { ModalForm } from '../components/Modal'
 import { addDays, formatDay, formatTime, todayIst } from '../format'
+import { ClinicSetupChecklist } from './ClinicSetup'
 import { useClinicScope } from './clinicScopeState'
 
 const emergencyOptions = (Object.keys(emergencyLabels) as EmergencyReason[]).map((r) => ({ value: r, label: emergencyLabels[r] }))
@@ -89,8 +91,14 @@ export function QueuePage() {
       </div>
 
       {sessions.loading && !sessions.data && <Loading />}
+      <ClinicSetupChecklist />
       {sessions.data && sessions.data.length === 0 && (
-        <p className="panel">No sessions on {formatDay(date)}. Set your weekly hours on the Schedule page.</p>
+        <p className="panel">
+          No sessions on {formatDay(date)}.{' '}
+          {scope.current.role === 'Doctor'
+            ? <>Set your weekly hours, or open special hours for this date, on the <Link to="/clinic/schedule">Schedule</Link> page.</>
+            : 'The doctor sets clinic hours on the Schedule page.'}
+        </p>
       )}
       {sessions.data && sessions.data.length > 0 && (
         <div className="tabs" role="tablist" aria-label="Sessions">

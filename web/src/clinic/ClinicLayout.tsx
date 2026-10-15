@@ -75,10 +75,11 @@ export function ClinicLayout() {
           <ul className="tabs">
             <li><NavLink className="tab" to="/clinic" end>Queue</NavLink></li>
             <li><NavLink className="tab" to="/clinic/schedule">Schedule</NavLink></li>
-            <li><NavLink className="tab" to="/clinic/announcements">Announcements</NavLink></li>
+            <li><NavLink className="tab" to="/clinic/announcements">Notices &amp; leave</NavLink></li>
             <li><NavLink className="tab" to="/clinic/history">History</NavLink></li>
             <li><NavLink className="tab" to="/clinic/reports">Reports</NavLink></li>
             {isDoctor && <li><NavLink className="tab" to="/clinic/staff">Staff</NavLink></li>}
+            {isDoctor && <li><NavLink className="tab" to="/clinic/profile">Profile &amp; QR</NavLink></li>}
           </ul>
         </nav>
       </div>

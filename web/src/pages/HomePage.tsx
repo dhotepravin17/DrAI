@@ -23,8 +23,9 @@ export function HomePage() {
   const hasQuery = search.size > 0
   search.set('page', String(page))
 
-  const searchResult = useApi<Paged<DoctorCard>>(hasQuery ? `/doctors/search?${search}` : null)
-  const result = hasQuery && !searchResult.loading ? searchResult.data ?? null : null
+  // With no search text or filters ("All cities", "All specialties") this lists every verified doctor.
+  const searchResult = useApi<Paged<DoctorCard>>(`/doctors/search?${search}`)
+  const result = !searchResult.loading ? searchResult.data ?? null : null
   const loading = searchResult.loading
   const error = searchResult.error ? errorMessage(searchResult.error) : null
 
@@ -106,10 +107,18 @@ export function HomePage() {
         {!loading && result && (
           <>
             <h2 className="results-heading">
-              {result.total === 0 ? 'No doctors found' : `${result.total} doctor${result.total === 1 ? '' : 's'} found`}
+              {result.total === 0
+                ? 'No doctors found'
+                : hasQuery
+                  ? `${result.total} doctor${result.total === 1 ? '' : 's'} found`
+                  : `All doctors (${result.total})`}
             </h2>
             {result.total === 0 && (
-              <p>Check the spelling, try the full Doctor ID such as NGP-Dr-0001, or remove a filter.</p>
+              <p>
+                {hasQuery
+                  ? 'Check the spelling, try the full Doctor ID such as NGP-Dr-0001, or remove a filter.'
+                  : 'No verified doctors are listed yet.'}
+              </p>
             )}
             <ul className="doctor-list">
               {result.items.map((d) => (
